@@ -1,0 +1,13 @@
+<div class="col d-flex align-items-center p-0 ml-1 mr-1 grid-video grid-video-{{ grid_id }} {% block element_class %}{% endblock %}
+            grid-video-{% if template_class_suffix %}{{ template_class_suffix }}{% else %}{% block template_class_suffix %}{% endblock %}{% endif %}">
+    <div class="d-flex justify-content-center position-relative w-100 grid-video-container">
+        {% block before %}{% endblock %}
+        <video class="{{ grid_id }}Element w-100" src="" poster=""
+               preload="None" type="video/mp4" oncontextmenu="return false;"></video>
+        {% block after %}{% endblock %}
+        <div class="d-flex justify-content-between text-white grid-video-controls">
+            <i class="fas fa-play grid-video-play-pause"></i>
+            <i class="fas fa-expand grid-video-full-screen"></i>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+{% extends 'page_layout/center-content.html' %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('registration/css/login-apply.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('registration/js/login-apply.js') }}"></script>
+{% endblock %}
+
+
+{% block topbar %}
+    <div id="aboutDiv" class="d-none">
+        <i class="fas fa-2x fa-info-circle" data-toggle="modal" data-target="#appAboutModal"></i>
+    </div>
+{% endblock %}
+
+
+{% block center_content %}
+    <img src="{{ static("images/viva-logo.png") }}" alt="VIVA Logo">
+    <noscript>
+        <div class="alert alert-danger mt-2" role="alert">
+            You have to enable JavaScript to use this web site.
+        </div>
+    </noscript>
+    <div id="registrationFormDiv" class="d-none mt-2 text-left">
+        {% if announcements %}
+            {% include 'page_elements/announcements.html' %}
+        {% endif %}
+        {% if user.is_authenticated %}
+            <meta http-equiv="Refresh" content="0; url={% if next %}{{ next }}{% else %}{{ url('accounts:profile') }}{% endif %}"/>
+        {% else %}
+            {% block registration_content %}{% endblock %}
+        {% endif %}
+    </div>
+
+    <div class="modal fade" id="appAboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aboutModalLabel">About this app</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2>VIVA-Tool</h2>
+                    {% set app_version_dict = get_app_version_information() %}
+                    {% if app_version_dict.commit_hash %}
+                        <a href="https://github.com/umr-ds/VIVA-Tool/commit/{{ app_version_dict.commit_hash }}"
+                           target="_blank">{{ app_version_dict.commit_hash }}</a>
+                        -
+                        {% if app_version_dict.tag_name %}
+                            Tag: {{ app_version_dict.tag_name }}
+                        {% else %}
+                            {{ app_version_dict.commit_title }}
+                            -
+                            {{ app_version_dict.commit_author }}
+                        {% endif %}
+                        (<span id="about-info-commit-time">{{ app_version_dict.commit_time }}</span>)
+                    {% else %}
+                        <i>The auto generated version file is missing.</i><br>
+                        This is a development build version.
+                    {% endif %}
+                    <hr>
+                    <a href="https://www.uni-marburg.de" target="_blank">
+                        <img class="about-info-logos" src="{{ static("images/umr-logo.svg") }}"
+                             alt="Philipps-Universität Marburg">
+                    </a>
+                    <a href="https://www.dra.de" class="m-3" target="_blank">
+                        <img class="about-info-logos-lg" src="{{ static("images/dra-logo.svg") }}"
+                             alt="Deutsches Rundfunkarchiv in Frankfurt am Main">
+                    </a>
+                    <a href="https://www.tib.eu" target="_blank">
+                        <img class="about-info-logos" src="{{ static("images/tib-logo.png") }}"
+                             alt="Technische Informationsbibliothek Hannover">
+                    </a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $("#registrationFormDiv").removeClass("d-none");
+            $("#aboutDiv").removeClass("d-none");
+            $('[data-toggle="tooltip"]').tooltip();
+            {% if app_version_dict.commit_time %}
+                $("#about-info-commit-time").text(timeSince({{ app_version_dict.commit_time }} * 1000));
+            {% endif %}
+        });
+    </script>
+{% endblock %}

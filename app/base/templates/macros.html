@@ -1,0 +1,17 @@
+{% macro includeTemplatesCSS(files) %}
+    {% for file in files %}
+        {% from file import css %}
+        {% if is_macro(css) %}
+            {{ css() }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{% macro includeTemplatesJS(files) %}
+    {% for file in files %}
+        {% from file import js %}
+        {% if is_macro(js) %}
+            {{ js() }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}

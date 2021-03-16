@@ -1,0 +1,5 @@
+command: bash -c "python manage.py collectstatic --no-input --clear && python manage.py runserver 8000"
+environment:
+- DEBUG=1
+ports:
+- 127.0.0.1:${PORT_DJANGO:-8000}:8000

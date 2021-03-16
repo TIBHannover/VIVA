@@ -1,0 +1,41 @@
+{% extends "page_layout/sidebar.html" %}
+
+{% block sidebar_content %}
+    <table class="table table-striped" id="userTable" data-toggle="table" data-pagination="true" data-search="true"
+           data-show-icons="true" data-show-pagination-switch="true" data-click-to-select="true">
+        <thead class="bg-primary text-white">
+        <tr>
+            <th scope="col" data-field="is-active" data-sortable="true" data-sort-name="is-active">Active</th>
+            <th scope="col" data-field="username" data-sortable="true" data-sort-name="username">Username</th>
+            <th scope="col" data-field="email" data-sortable="true" data-sort-name="email">Email</th>
+            <th scope="col" data-field="first-name" data-sortable="true" data-sort-name="first-name">First name</th>
+            <th scope="col" data-field="last-name" data-sortable="true" data-sort-name="last-name">Last name</th>
+            <th scope="col" data-field="last-login" data-sortable="true" data-sort-name="last-login">Last login</th>
+            <th scope="col">Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td class="text-center">
+                    <input type="checkbox" name="is-active"
+                           {% if user.is_active %}checked{% endif %} onclick="return false;">
+                </td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{% if user.last_login %}{{ user.last_login|date }}{% else %}-{% endif %}</td>
+                <td class="no-wrap">
+                    <a href="{{ url("accounts:edit_user", args=(user.id,)) }}">
+                        <i class="fas fa-user-edit"></i>
+                    </a>
+                    <a class="ml-3" href="{{ url("accounts:delete_user", args=(user.id,)) }}">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

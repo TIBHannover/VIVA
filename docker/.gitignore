@@ -1,0 +1,8 @@
+data/*
+!data/*.sh
+
+.idea/
+
+# exclude Pipfile.lock in this case because it might be regenerated frequently
+script/Pipfile.lock
+docker-compose.yml

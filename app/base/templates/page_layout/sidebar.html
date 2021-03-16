@@ -1,0 +1,84 @@
+{% extends 'page_layout/topbar.html' %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('base/css/page_layout/sidebar.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('base/js/page_layout/sidebar.js') }}"></script>
+{% endblock %}
+
+
+{% set menu = generate_menu() %}
+{% block sidebar_with_content %}
+    <div id="wrapper" class="toggled">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" class="bg-light border-right navbar-light">
+            <ul class="sidebar-nav navbar-nav">
+                {% for menu_name, menu_items in menu.menus.items() %}
+                    {% if menu_name == request.resolver_match.app_name + "_main" %}
+                        {% for menu_item in menu_items %}
+                            {% if menu_item.visible %}
+                                {% if menu_item.children|length != 0 %}
+                                    <li>
+                                        <a class="nav-item nav-link dropdown-toggle"
+                                           href="#pageSubmenu{{ loop.index }}" data-toggle="collapse">
+                                            {{ menu_item.title }}
+                                        </a>
+                                        <ul class="collapse list-unstyled {% if is_child_menu_item_selected(menu_item) %}show{% endif %}"
+                                            id="pageSubmenu{{ loop.index }}">
+                                            {% for sub_menu_item in menu_item.children %}
+                                                {% if sub_menu_item.visible %}
+                                                    {% if sub_menu_item.children|length != 0 %}
+                                                        <li class="pl-3">
+                                                            <a class="nav-item nav-link dropdown-toggle"
+                                                               href="#pageSubSubmenu{{ loop.index }}"
+                                                               data-toggle="collapse">
+                                                                {{ sub_menu_item.title }}
+                                                            </a>
+                                                            <ul class="collapse list-unstyled {% if is_child_menu_item_selected(sub_menu_item) %}show{% endif %}"
+                                                                id="pageSubSubmenu{{ loop.index }}">
+                                                                {% for sub_sub_menu_item in sub_menu_item.children %}
+                                                                    {% if sub_sub_menu_item.visible %}
+                                                                        <li class="pl-4">
+                                                                            <a class="nav-item nav-link {% if sub_sub_menu_item.selected %} active {% endif %}"
+                                                                               href="{{ sub_sub_menu_item.url }}">{{ sub_sub_menu_item.title }}</a>
+                                                                        </li>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="pl-3">
+                                                            <a class="nav-item nav-link {% if sub_menu_item.selected %} active {% endif %}"
+                                                               href="{{ sub_menu_item.url }}">
+                                                                {{ sub_menu_item.title }}
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a class="nav-item nav-link {% if menu_item.selected %} active {% endif %}"
+                                           href="{{ menu_item.url }}">
+                                            {{ menu_item.title }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div> <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                {% block sidebar_content %}{% endblock %}
+            </div>
+        </div> <!-- /#page-content-wrapper -->
+    </div> <!-- /#wrapper -->
+{% endblock %}

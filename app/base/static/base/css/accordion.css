@@ -1,0 +1,14 @@
+.accordion-chevron-indicator button:before {
+    font-family: Font Awesome\ 5 Free;
+    font-weight: 900;
+    content: "\f078";
+}
+.accordion-chevron-indicator button.collapsed:before {
+    content: "\f054";
+}
+.accordion-chevron-indicator .btn-link {
+    text-decoration: none;
+}
+.accordion-chevron-indicator .card-header label {
+    cursor: pointer;
+}

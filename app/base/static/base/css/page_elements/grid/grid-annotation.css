@@ -1,0 +1,44 @@
+.grid-annotation .annotation {
+    border: .75rem solid;
+}
+
+.annotation-neutral {
+    border-color: lightgray !important;
+    background-color: lightgray !important;
+}
+
+.annotation-negative {
+    border-color: lightsalmon !important;
+    background-color: lightsalmon !important;
+}
+
+.annotation-positive {
+    border-color: lightgreen !important;
+    background-color: lightgreen !important;
+}
+
+.annotation-none, .grid-video-container .grid-video-controls {
+    border-color: transparent !important;
+}
+
+.annotation-failed {
+    border-color: red !important;
+    border-style: dashed !important;
+    background-color: red !important;
+}
+
+.annotation-neutral-bg {
+    background-color: lightgray !important;
+}
+
+.annotation-negative-bg {
+    background-color: lightsalmon !important;
+}
+
+.annotation-positive-bg {
+    background-color: lightgreen !important;
+}
+
+.element-selected {
+    border-color: lightskyblue !important;
+}

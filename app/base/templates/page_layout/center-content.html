@@ -1,0 +1,20 @@
+{% extends 'page_layout/base.html' %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('base/css/page_layout/center-content.css') }}" rel="stylesheet">
+{% endblock %}
+
+
+{% block base_content %}
+    <section class="hv-centered-parent">
+        <div class="hv-centered-child">
+            <div>
+                {% block center_content %}{% endblock %}
+            </div>
+        </div>
+    </section>
+    <script>
+        $("html").addClass("h-100");
+        $("body").addClass("h-100");
+    </script>
+{% endblock %}

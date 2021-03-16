@@ -1,0 +1,120 @@
+{#
+    Template for controls and feedback about a action that is executed asynchronus in background. This action can
+    rely on an other action that had to completed or is not allowed to run when executing this action
+    (eg. export depends on inference and vice versa).
+
+    Jinja context variables that are used by this template:
+    - async_id: the id of this template (single lowercase word to follow naming conventions!)
+    - async_dependency_run_text: the text for run blocking dependency
+    - async_dependency_prerequisite_text: the text for the prerequisite dependency
+    - async_options: a callable macro that will return the HTML for start options
+    - asnyc_progress: a callable macro that returns the HTML for current progress information
+
+    There were HTML ids for the macro 'async_progress' that are automatically filled with text and updated by the
+    corresponding Javascript. The HTML ids are:
+    - {{ async_id }}ProgressCurrent: Text (number) of already processed elements
+    - {{ async_id }}ProgressTotal: Text (number) of total amount of elements to process
+    - {{ async_id }}ProgressPercent: Text showing the percentage of processed elements
+    - {{ async_id }}ProgressBar: Bootstrap's progress-bar which attributes will be manipulated accordingly to current
+                                 progress
+
+    An instance of the Javascript class "AsyncAction" is required to fullfill the function of this template.
+    See Javascript class contructor documentation for more details.
+#}
+
+{% macro css() %}
+    <link href="{{ static('base/css/page_elements/async-action.css') }}" rel="stylesheet">
+{% endmacro %}
+
+{% macro js() %}
+    <script type="text/javascript" src="{{ static('base/js/page_elements/async-action.js') }}"></script>
+{% endmacro %}
+
+<!-- general status messages -->
+<div>
+    <div class="{{ async_id }}-status-disconnected alert alert-danger mb-1 d-none" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>No connection to internal server. Trying to connect...
+    </div>
+    <div class="{{ async_id }}-status-loading row align-self-center justify-content-center mb-1">
+        <div class="spinner-border text-primary" role="status"></div>
+        <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+    </div>
+    <div class="{{ async_id }}-status-failed alert alert-danger mb-1 d-none" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>An exception occurred while requesting information
+    </div>
+</div>
+
+<div class="{{ async_id }}-content d-none">
+    <!-- status messages -->
+    <div>
+        <div class="alert alert-warning mb-1" id="{{ async_id }}StatusDependencyPrerequisite" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            No {{ async_dependency_prerequisite_text }} has been run completely yet
+        </div>
+        <div class="alert alert-warning mb-1" id="{{ async_id }}StatusDependencyRun" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            {{ async_dependency_run_text }} is currently running - start disabled
+        </div>
+        <div class="alert alert-danger mb-1" id="{{ async_id }}StatusException" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Last run stopped unexpectedly:<br>
+            <span id="{{ async_id }}StatusExceptionText"></span><br>
+        </div>
+    </div>
+
+    <!-- options -->
+    {% if async_options %}
+        {{ async_options() }}
+    {% endif %}
+
+    <!-- current progress -->
+    {% if async_progress %}
+        <div id="{{ async_id }}Progress">{{ async_progress() }}</div>
+    {% endif %}
+
+    <!-- control buttons -->
+    <div class="d-flex flex-wrap flex-row align-items-center mt-2">
+        <button type="button" class="btn btn-secondary ml-2" id="{{ async_id }}ControlStart" disabled>
+            Start
+        </button>
+        <button type="button" class="btn btn-secondary ml-2" id="{{ async_id }}ControlStop" disabled
+                data-toggle="modal" data-target="#{{ async_id }}ModalControlStop">
+            Stop
+        </button>
+        <div class="spinner-border spinner-border-sm ml-2 mr-2" id="{{ async_id }}ControlLoading" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="ml-2 mr-2" id="{{ async_id }}ControlRuntime">
+            <i class="fas fa-stopwatch" title="Runtime"></i>
+            <span id="{{ async_id }}ControlRuntimeString">RUNTIME</span>
+        </div>
+        <div class="ml-2 mr-2" id="{{ async_id }}ControlETE">
+            <i class="text-monospace async-action-eta" title="Estimated time elapsed"><strong>ETE</strong></i>
+            <span id="{{ async_id }}ControlETEString">...</span>
+        </div>
+    </div>
+
+    <!-- stop modal -->
+    <div class="modal fade" id="{{ async_id }}ModalControlStop" tabindex="-1" role="dialog"
+         aria-labelledby="{{ async_id }}ModalControlStopLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="{{ async_id }}ModalControlStopLabel">Stop current run</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure that you want to cancel the current run?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="{{ async_id }}ModalControlStopSubmit"
+                            data-dismiss="modal">
+                        Yes
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

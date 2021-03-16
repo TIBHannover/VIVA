@@ -1,0 +1,30 @@
+{% macro css() %}
+    <link href="{{ static('base/css/page_elements/notifications.css') }}" rel="stylesheet">
+{% endmacro %}
+
+{% macro js() %}
+    <script type="text/javascript" src="{{ static('base/js/page_elements/notifications.js') }}"></script>
+{% endmacro %}
+
+<div id="toastContainer" class="fixed-top mr-2" aria-live="polite" aria-atomic="true">
+    <div id="messages"></div>
+</div>
+<div id="messageTemplateContainer">
+    <div id="templateMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+         data-autohide="false">
+        <div class="toast-header">
+            <i class="fas m-1"></i>
+            <strong class="message-title mr-auto">TITLE</strong>
+            <small class="message-timestamp text-muted m-1" data-timestamp="0">
+                TIMESTAMP
+            </small>
+            <button type="button" class="message-close-button ml-2 mb-1 close" data-dismiss="toast"
+                    aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body message-text">
+            TEXT
+        </div>
+    </div>
+</div>

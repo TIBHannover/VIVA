@@ -1,0 +1,16 @@
+image: nginx:${TAG_NGINX}
+volumes:
+- ./data/nginx:/etc/nginx/certs:ro
+- ./build/nginx/nginx.conf:/etc/nginx/templates/default.conf.template:ro
+- ${MEDIA_ROOT:-../app/media}:/usr/src/app/media:ro
+- static-volume:/usr/src/app/static:ro
+ports:
+- ${LOCAL_NGINX:-}${PORT_NGINX:-443}:${HTTP_NGINX:-443}
+depends_on:
+- django
+- keras
+env_file:
+- .env
+- env/django_nginx.env
+environment:
+- NGINX_UPLOAD_LIMIT=${NGINX_UPLOAD_LIMIT}

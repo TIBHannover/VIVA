@@ -1,0 +1,75 @@
+{% extends "page_layout/base.html" %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('base/css/page_layout/topbar.css') }}" rel="stylesheet">
+    {{ includeTemplatesCSS(['page_elements/notifications.html']) }}
+{% endblock %}
+
+{% block js %}{{ super() }}
+    {{ includeTemplatesJS(['page_elements/notifications.html']) }}
+{% endblock %}
+
+
+{% block topbar %}
+    <nav class="navbar sticky-top navbar-expand navbar-light bg-light border-bottom" id="pageTopNavBar">
+        <button class="btn btn-outline-secondary mr-3" id="menu-toggle">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-nav">
+            {% for app in list_apps() %}
+                {% if request.path.startswith(app.link) %}
+                    <a class="nav-item nav-link" href="{{ app.link }}">
+                        <i class="fas {{ app.icon }} fa-2x app-icon-active" data-toggle="tooltip"
+                           title="{{ app.title }}"></i>
+                        <span class="sr-only">(current)</span>
+                    </a>
+                {% else %}
+                    <a class="nav-item nav-link" href="{{ app.link }}">
+                        <i class="fas {{ app.icon }} fa-2x" data-toggle="tooltip" title="{{ app.title }}"></i>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% if request.path.split("/")[2] == "data" %}
+            <div class="navbar-nav">
+                <a class="nav-item nav-link ml-5" id="selectedClassString" href="{{ url(request.resolver_match.app_name + ":start") }}">
+                    {{ get_selected_class() }}
+                </a>
+            </div>
+        {% endif %}
+        <div class="navbar-nav ml-auto text-dark">
+            <a class="navbar-brand" href="/">
+                <img src="{{ static("images/viva-logo.png") }}" alt="VIVA">
+            </a>
+            <div class="navbar-item ml-2">
+                {% with login_url = url('accounts:login') %}
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                <i class="fas fa-user" aria-hidden="true"></i> {{ user.username }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"
+                                 style="z-index: 2000;">
+                                <a class="dropdown-item" href="{{ url('accounts:profile') }}">Profile</a>
+                                <a class="dropdown-item" href="{{ url('accounts:change_password') }}">
+                                    Change password
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ url('accounts:logout') }}">Logout</a>
+                            </div>
+                        </div>
+                    {% elif request.path != login_url %}
+                        <a class="btn btn-outline-secondary" href="{{ login_url }}?next={{ request.path }}"
+                           role="button">
+                            Login
+                        </a>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        {# Included here to be able to display dropdown menu over notifications #}
+        {% include 'page_elements/notifications.html' %}
+    </nav>
+{% endblock %}

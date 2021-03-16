@@ -1,0 +1,4 @@
+environment:
+- FLASK_DEBUG=1
+ports:
+- 127.0.0.1:${PORT_KERAS:-8080}:8080

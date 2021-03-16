@@ -1,0 +1,5 @@
+# convert bash scripts to unix (dos2unix) - crlf -> lf
+command: bash -c "mkdir -p /scripts_unix
+               && cp /scripts/* /scripts_unix
+               && find /scripts_unix -type f -exec sed -i $$'s/\r$$//' {} \;
+               && bash /scripts_unix/start_init.sh"

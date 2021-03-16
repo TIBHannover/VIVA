@@ -1,0 +1,13 @@
+.hv-centered-parent {
+    width: 100%;
+    height: 100%;
+    display: table;
+    text-align: center;
+}
+.hv-centered-parent > .hv-centered-child {
+    display: table-cell;
+    vertical-align: middle;
+}
+.hv-centered-parent > .hv-centered-child > div {
+    display: inline-block;
+}

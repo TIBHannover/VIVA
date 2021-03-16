@@ -1,0 +1,8 @@
+.async-log-options a {
+    background-color: #e9ecef;
+}
+
+.async-log-content {
+    overflow: scroll;
+    white-space: pre;
+}

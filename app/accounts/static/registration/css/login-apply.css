@@ -1,0 +1,21 @@
+#aboutDiv {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1em;
+    opacity: 0.5;
+}
+#aboutDiv > i {
+    cursor: pointer;
+}
+
+.about-info-logos {
+    width: 200px;
+}
+.about-info-logos-lg {
+    width: 250px;
+}
+
+#announcements .announcement-date {
+    font-size: small;
+}

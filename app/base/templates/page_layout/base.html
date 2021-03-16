@@ -1,0 +1,60 @@
+{% from 'macros.html' import includeTemplatesCSS, includeTemplatesJS %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- META -->
+    <meta charset="UTF-8">
+
+    <title>{% block head_title %}Visual information retrieval in video archives{% endblock %}</title>
+
+
+    <!-- CSS -->
+    <!-- third party -->
+    <link href="{{ static('third_party/css/bootstrap-4.3.1.min.css') }}" rel="stylesheet">
+    <link href="{{ static('third_party/css/bootstrap-table-1.15.4.min.css') }}" rel="stylesheet">
+    <link href="{{ static('third_party/css/fa-all-5.11.2.min.css') }}" rel="stylesheet">
+    <link href="{{ static('third_party/css/bootstrap-select-1.13.14.min.css') }}" rel="stylesheet">
+
+    <!-- common defined CSS -->
+    <link href="{{ static('base/css/accordion.css') }}" rel="stylesheet">
+    <link href="{{ static('base/css/select-picker.css') }}" rel="stylesheet">
+
+    <!-- page based CSS -->
+    {% block css %}{% endblock %}{# no page related references in this file anymore please #}
+
+
+    <!-- JS -->
+    <!-- third party -->
+    <script type="text/javascript" src="{{ static('third_party/js/jquery-3.3.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('third_party/js/popper-1.14.7.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('third_party/js/bootstrap-4.3.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('third_party/js/js_cookie-2.2.1.js') }}"></script>
+    <script type="text/javascript" src="{{ static('third_party/js/bootstrap-table-1.15.4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('third_party/js/chart.bundle-2.9.3.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ static('third_party/js/chartjs-plugin-annotation-2020.05.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('third_party/js/chartjs-plugin-streaming-1.8.0.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static('third_party/js/bootstrap-select-1.13.14.min.js') }}"></script>
+
+    <!-- common used JS -->
+    <script type="text/javascript" src="{{ static('base/js/arrays.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/event-handling.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/html-input.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/key-listener.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/math.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/session.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/string.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/time.js') }}"></script>
+    {% include 'page_elements/js-consts.html' %}
+
+    <!-- page based JS -->
+    {% block js %}{% endblock %}{# no page related references in this file anymore please #}
+</head>
+<body>
+
+{% block topbar %}{% endblock %}
+{% block sidebar_with_content %}{% endblock %}
+{% block base_content %}{% endblock %}
+
+</body>
+</html>

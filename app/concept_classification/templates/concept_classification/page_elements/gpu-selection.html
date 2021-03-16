@@ -1,0 +1,31 @@
+{#
+    Template for GPU selection
+
+    Jinja context variables that are used by this template:
+    - gpu_selection_id: the HTML id to use in this template (follow HTML naming conventions!)
+    - gpu_selection_class: the HTML class to use in this template (follow HTML naming conventions!)
+
+    Use the Javascript class "GPUSelection" for generation of the HTML elements.
+#}
+
+{% macro js() %}
+    <script type="text/javascript" src="{{ static('concept_classification/js/page_elements/gpu-selection.js') }}"></script>
+{% endmacro %}
+
+<div class="input-group w-auto mb-1 border rounded" id="{{ gpu_selection_id }}">
+    <div class="input-group-prepend">
+        <span class="input-group-text border-0">GPU</span>
+    </div>
+    <div class="p-1 d-flex flex-wrap flex-row d-none" id="{{ gpu_selection_id }}Selection"></div>
+    <div class="input-group w-auto rounded ml-1 border rounded d-none" id="{{ gpu_selection_id }}Template">
+        <div class="input-group-prepend">
+            <span class="input-group-text {{ gpu_selection_class }}-name"></span>
+        </div>
+        <div class="{{ gpu_selection_class }}-list"></div>
+    </div>
+    <div class="input-group-text bg-transparent d-none" id="{{ gpu_selection_id }}TemplateListItem">
+        <i class="fas fa-exclamation-triangle mr-1 d-none {{ gpu_selection_class }}-warning"></i>
+        <input type="checkbox" aria-label="Select GPU" class="mr-1 {{ gpu_selection_class }}-checkbox">
+        [<span class="{{ gpu_selection_class }}-index"></span>]
+    </div>
+</div>

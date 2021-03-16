@@ -1,0 +1,184 @@
+{% extends "page_layout/sidebar.html" %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('accounts/js/edit_user.js') }}"></script>
+    <script type="text/javascript" src="{{ static('accounts/js/set_password.js') }}"></script>
+{% endblock %}
+
+
+{% block sidebar_content %}
+    {% if form.non_field_errors() %}
+        <div class="alert alert-danger alert-profile-form" role="alert">
+            {% for error in form.non_field_errors() %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% elif not form.errors and messages %}
+        <div class="alert alert-success alert-profile-form" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputUsername" placeholder="Username"
+                       name="{{ form.username.html_name }}" readonly value="{{ form.username.value() }}">
+            </div>
+        </div>
+        <fieldset class="form-group">
+            <div class="row">
+                <label class="col-form-label col-sm-2 pt-0">Active</label>
+                <div class="col-sm-10">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="{{ form.is_active.html_name }}"
+                               id="isActiveCheckbox" {% if form.is_active.value() %}checked{% endif %}>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group row">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10 input-group">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password"
+                       value="password" aria-describedby="button-password-change" readonly>
+                <div class="input-group-append">
+                    <a class="btn btn-outline-secondary" type="button" id="button-password-change"
+                       data-target="#setPasswordModal" data-toggle="modal">Change</a>
+                </div>
+            </div>
+        </div>
+        {% if form.email.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.email.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputEmail" placeholder="Email-address"
+                       name="{{ form.email.html_name }}" value="{{ form.email.value() }}">
+            </div>
+        </div>
+        {% if form.first_name.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.first_name.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputFirstName" class="col-sm-2 col-form-label">First name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputFirstName" placeholder="First name"
+                       name="{{ form.first_name.html_name }}" value="{{ form.first_name.value() }}">
+            </div>
+        </div>
+        {% if form.last_name.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.last_name.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputLastName" class="col-sm-2 col-form-label">Last name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputLastName" placeholder="Last name"
+                       name="{{ form.last_name.html_name }}" value="{{ form.last_name.value() }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputGroups" class="col-sm-2 col-form-label">Groups</label>
+            <div class="col-sm-10 input-group">
+                <input type="text" class="form-control" id="inputGroups"
+                       value="{{ get_groups_as_string(object.groups.all()) }}" aria-describedby="button-groups-change"
+                       readonly>
+                <div class="input-group-append">
+                    <a class="btn btn-outline-secondary" type="button" id="button-groups-change"
+                       data-target="#setGroupsModal" data-toggle="modal">Change</a>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Change data</button>
+            </div>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}"/>
+    </form>
+
+    <div class="modal" id="setPasswordModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form id="setPasswordForm" action="{{ url('accounts:set_user_password') }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username" value="{{ form.username.value() }}"/>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Set user password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger alert-profile-form d-none" id="setPasswordError" role="alert">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control mb-2" id="inputPassword1"
+                                   name="password1" placeholder="Password">
+                            <input type="password" class="form-control" id="inputPassword2"
+                                   name="password2" placeholder="Confirm password">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="setPasswordSubmit">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="setGroupsModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form id="setGroupsForm" action="{{ url('accounts:set_groups') }}">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">Set user groups</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger alert-profile-form d-none" id="setGroupsError" role="alert"></div>
+                        <div class="form-group">
+                            {% for group in groups %}
+                                <div class="form-check">
+                                    <input id=setGroup{{ group.id }}Checkbox class="form-check-input group-checkbox"
+                                           type="checkbox" value="{{ group.id }}"
+                                           {% if is_user_in_group(object, group.id) %}checked{% endif %}>
+                                    <label class="form-check-label ml-1" for="setGroup{{ group.id }}Checkbox">
+                                        <span data-toggle="edit-user-tooltip" data-html="true"
+                                              title="{{ get_group_description(group) }}">
+                                            {{ group.name }}
+                                        </span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="setGroupsSubmit">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

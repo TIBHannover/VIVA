@@ -1,0 +1,14 @@
+#hwInfoCpuBox {
+    max-width: none;
+}
+
+#hwInfoGpuBoxInsert > div .container {
+    max-width: none;
+}
+
+.hw-info-chart {
+    height: 12em;
+}
+.hw-info-gpu {
+    height: 1em;
+}

@@ -1,0 +1,6 @@
+depends_on:
+- django-rq
+- face-processing
+- elastic-search
+- postgres
+- redis

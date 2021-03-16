@@ -1,0 +1,3 @@
+volumes:
+- postgres_volume:/var/lib/postgresql/data
+- ./data/postgres/transfer:/transfer

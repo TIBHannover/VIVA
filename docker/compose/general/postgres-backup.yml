@@ -1,0 +1,9 @@
+image: viva_postgres_backup:${TAG_PG_BACKUP}
+build:
+  context: ./build/postgres-backup
+volumes:
+- ./data/postgres/backup:/dumps
+env_file:
+- .env
+depends_on:
+- postgres

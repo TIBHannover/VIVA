@@ -1,0 +1,106 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('base/js/page/model-evaluation.js') }}"></script>
+{% endblock %}
+
+{% block sidebar_content %}
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text rounded-left">Sort by</span>
+        </div>
+        <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+            <label class="btn btn-outline-primary rounded-0{% if eval_sort_mode == "new_aps" %} active{% endif %}"
+                   onclick="setEvalSortMode('new_aps');">
+                <input type="radio" id="evalSortNewOpt" {% if eval_sort_mode == "new_aps" %}checked{% endif %}> New
+                scores
+            </label>
+            <label class="btn btn-outline-primary{% if eval_sort_mode == "old_aps" %} active{% endif %}"
+                   onclick="setEvalSortMode('old_aps');">
+                <input type="radio" id="evalSortOldOpt" {% if eval_sort_mode == "old_aps" %}checked{% endif %}> Old
+                scores
+            </label>
+            <label class="btn btn-outline-primary{% if eval_sort_mode == "alphabetically" %} active{% endif %}"
+                   onclick="setEvalSortMode('alphabetically');">
+                <input type="radio" id="evalSortNameOpt"
+                       {% if eval_sort_mode == "alphabetically" %}checked{% endif %}> Name
+            </label>
+        </div>
+    </div>
+    <br>
+    <div class="alert alert-warning mb-1{% if old_precisions_per_class|length != 0 %} d-none{% endif %}" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>No model has been trained yet
+    </div>
+    <div class="alert alert-info mb-1{% if old_precisions_per_class|length == 0 or new_precisions_per_class|length != 0 %} d-none{% endif %}"
+         role="alert">
+        <i class="fas fa-info-circle mr-2"></i>No new model has been trained yet - showing no comparison
+    </div>
+
+    <div class="w-100">
+        <canvas id="modelEvaluation" height="{{ old_precisions_per_class|length * 4 }}"></canvas>
+    </div>
+
+    <script type="text/javascript">
+        let ctx = document.getElementById('modelEvaluation').getContext('2d');
+        let evaluationChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                {% if new_precisions_per_class|length > 0 %}
+                    {% set precisions_per_class = new_precisions_per_class %}
+                {% else %}
+                    {% set precisions_per_class = old_precisions_per_class %}
+                {% endif %}
+                labels: ["Overall", ""].concat([{% for name, _ in precisions_per_class %}
+                    '{{ name }}'{% if not loop.last %}, {% endif %}{% endfor %}]),
+                datasets: [
+                    {% if new_precisions_per_class|length > 0 %}{
+                    label: 'New model',
+                    backgroundColor: 'rgba(54, 162, 235, .5)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderWidth: 1,
+                    data: [{{ new_overall_ap }}, undefined].concat([{% for _, value in new_precisions_per_class %}
+                        {{ value|float }}{% if not loop.last %}, {% endif %}{% endfor %}])
+                    },{% endif %}
+                    {
+                    label: 'Old model',
+                    backgroundColor: 'rgba(255, 205, 86, .5)',
+                    borderColor: 'rgb(255, 205, 86)',
+                    borderWidth: 1,
+                    data: [{{ old_overall_ap }}, undefined].concat([{% for _, value in old_precisions_per_class %}
+                        {{ value|float }}{% if not loop.last %}, {% endif %}{% endfor %}])
+                }]
+            },
+            options: {
+                elements: {
+                    rectangle: {
+                        borderWidth: 2,
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Average precision per class'
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            autoSkipPadding: -6
+                        }
+                    }]
+                },
+                plugins: {
+                    annotation: {
+                        annotations: [{
+                            type: 'line',
+                            id: 'overallAP',
+                            mode: 'horizontal',
+                            scaleID: 'y-axis-0',
+                            value: 1,
+                            borderColor: 'gray',
+                            borderWidth: 2
+                        }]
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

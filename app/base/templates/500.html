@@ -1,0 +1,12 @@
+{% extends 'page_layout/center-content.html' %}
+
+{% block center_content %}
+    <img src="{{ static("images/viva-logo.png") }}" alt="VIVA Logo">
+    <h1>500 - Internal server error</h1>
+    <a href="javascript:history.back()" role="button" class="btn btn-primary">
+        <i class="fas fa-arrow-circle-left" aria-hidden="true"></i> Go back
+    </a>
+    <a href="{{ url("base:start") }}" role="button" class="btn btn-primary">
+        <i class="fas fa-home" aria-hidden="true"></i> Home
+    </a>
+{% endblock %}

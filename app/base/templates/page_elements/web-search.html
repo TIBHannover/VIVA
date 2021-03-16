@@ -1,0 +1,54 @@
+{#
+    Template to include a web search bar
+
+    Template parameters (Jinja2 variables):
+    - web_search_id: An unique indentifier for the web search bar
+
+    HTML element ids (replace ID with web_search_id from above):
+    - Form: webSearchIDForm
+    - Search text: webSearchIDText
+    - Search image type: webSearchIDImageType
+    - Maximum search result count: webSearchIDMaxResults
+    - Search submit button: webSearchIDSubmit
+      - Text for button: text
+      - Spinner: spinner
+      - Spinner text: spinnerText
+#}
+
+{% macro js() %}
+    <script type="text/javascript" src="{{ static('base/js/page_elements/web-search.js') }}"></script>
+{% endmacro %}
+
+
+<form id="webSearch{{ web_search_id }}Form" action="javascript:void(0);"
+      onsubmit="webSearchLoadingAnimation('{{ web_search_id }}');">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Search keyword</span>
+        </div>
+        <input type="text" class="form-control" id="webSearch{{ web_search_id }}Text"
+               placeholder="{% if default_keyword %}{{ default_keyword }}{% endif %}"
+               aria-label="Text input for keyword, dropdown for number of results and 'Go!' button">
+        <div class="input-group-append">
+            <select class="form-control rounded-0 selectpicker" id="webSearch{{ web_search_id }}ImageType">
+                <option value="default">Default</option>
+                <option value="photo"> Photo</option>
+                <option value="face">Face</option>
+            </select>
+            <select class="form-control rounded-0 selectpicker" id="webSearch{{ web_search_id }}License">
+                <option value="default">Any license</option>
+                <option value="noncommercial">Non-commercial</option>
+            </select>
+            <select class="form-control rounded-0 selectpicker" id="webSearch{{ web_search_id }}MaxResults">
+                {% for count in [50, 100, 250, 500, 750, 1000] %}
+                    <option value="{{ count }}">{{ count }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary" id="webSearch{{ web_search_id }}Submit">
+                <span class="spinner-grow spinner-grow-sm" id="spinner" role="status" aria-hidden="true" hidden></span>
+                <span class="sr-only" id="spinnerText" hidden>Loading...</span>
+                <span id="text">Go!</span>
+            </button>
+        </div>
+    </div>
+</form>

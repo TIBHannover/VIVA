@@ -1,0 +1,68 @@
+<div class="d-none" id="hwInfoGpuNotDetected">
+    <div class="alert alert-warning" role="alert">
+        No GPUs detected!
+    </div>
+    <div class="alert alert-info mb-1 d-none" id="hwInfoGpuNotDetectedFault" role="alert">
+        No GPU detected although the app version with GPU support was started.<br>
+        If there is no GPU installed please start the app with CPU support.
+    </div>
+</div>
+
+<div id="hwInfoGpuBoxSpinner" class="row align-self-center justify-content-center">
+    <div class="spinner-border text-primary" role="status"></div>
+    <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+</div>
+
+<div id="hwInfoGpuBoxError" class="alert alert-danger mb-1 d-none" role="alert">
+    <i class="fas fa-exclamation-triangle mr-2"></i>Error while connecting to server!
+</div>
+
+<div id="hwInfoGpuBoxInsert"></div>
+
+<div id="hwInfoGpuBox" class="d-none mt-2">
+    GPU <span class="hw-info-gpu-num">NUM</span>
+    <div class="border border-secondary rounded p-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <div class="container p-0">
+                        <div class="row">
+                            <div class="col-1">
+                                <img class="hw-info-gpu"
+                                     src="{{ static('concept_classification/img/gpu.png') }}"
+                                     alt="GPU">
+                            </div>
+                            <div class="col-11 pl-1 pr-1">
+                                <span class="hw-info-gpu-name">GPU_NAME</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="container p-0">
+                        <div class="row">
+                            <div class="col-1">
+                                <i class="fas fa-memory"></i>
+                            </div>
+                            <div class="col-11 pl-1 pr-1">
+                                <span class="hw-info-gpu-mem-total">TOTAL</span> total available memory<br>
+                                <span class="hw-info-gpu-mem-use">USE</span> currently used memory
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-danger mb-0 p-1 d-none hw-info-gpu-tf-supp-warn" role="alert">
+            <div class="d-flex">
+                <div class="pr-1"><i class="fas fa-exclamation-triangle"></i></div>
+                <div>
+                    This GPU is not compatible for training.
+                </div>
+            </div>
+        </div>
+        <div class="hw-info-chart">
+            <canvas class="hw-info-gpu-chart"></canvas>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+command: bash -c "python manage.py collectstatic --no-input --clear && python manage.py runserver 8000"
+depends_on:
+- django-rq
+- elastic-search
+- keras
+- postgres
+- redis

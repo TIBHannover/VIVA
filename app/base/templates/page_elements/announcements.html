@@ -1,0 +1,21 @@
+{% with announcements = get_announcements() %}
+    {% if announcements | length > 0 %}
+        <div id="announcements" class="text-left mb-4">
+            <h4 class="mb-0">Announcements</h4>
+            {% for announcement in announcements %}
+                <div class="alert alert-{{ announcement.type }} p-0 mb-1" role="alert">
+                    <span class="announcement-date p-1 float-right border-bottom border-left
+                    text-{{ announcement.type }} border-{{ announcement.type }}">{{ announcement.date }}</span>
+                    <div class="p-1">{{ announcement.text }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+<script>
+    $(function () {
+        $('#announcements .announcement-date').each(function (i, elem) {
+            $(this).text(timeConverter($(this).text()));
+        });
+    });
+</script>

@@ -1,0 +1,5 @@
+image: viva_tfs:${TAG_CUSTOM_TFS}-gpu
+build:
+  args:
+    TAG_GPU: -gpu
+runtime: nvidia

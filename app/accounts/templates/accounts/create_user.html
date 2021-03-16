@@ -1,0 +1,122 @@
+{% extends "page_layout/sidebar.html" %}
+
+{% block sidebar_content %}
+    {% if form.non_field_errors() %}
+        <div class="alert alert-danger alert-profile-form" role="alert">
+            {% for error in form.non_field_errors() %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% elif not form.errors and messages %}
+        <div class="alert alert-success alert-profile-form" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" action="">
+        {% csrf_token %}
+
+        {% if form.username.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.username.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputUsername" placeholder="Username"
+                       name="{{ form.username.html_name }}"
+                       {% if form.username.value() %}value="{{ form.username.value() }}"{% endif %}>
+            </div>
+        </div>
+
+        {% if form.password1.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.password1.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10 input-group">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password"
+                       name="{{ form.password1.html_name }}"
+                       {% if form.password1.value() %}value="{{ form.password1.value() }}"{% endif %}>
+            </div>
+        </div>
+
+    {% if form.password2.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.password2.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputPassword2" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10 input-group">
+                <input type="password" class="form-control" id="inputPassword2" placeholder="Confirm Password"
+                       name="{{ form.password2.html_name }}"
+                       {% if form.password2.value() %}value="{{ form.password2.value() }}"{% endif %}>
+            </div>
+        </div>
+
+        {% if form.email.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.email.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputEmail" placeholder="Email-address"
+                       name="{{ form.email.html_name }}"
+                       {% if form.email.value() %}value="{{ form.email.value() }}"{% endif %}>
+            </div>
+        </div>
+
+        {% if form.first_name.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.first_name.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputFirstName" class="col-sm-2 col-form-label">First name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputFirstName" placeholder="First name"
+                       name="{{ form.first_name.html_name }}"
+                       {% if form.first_name.value() %}value="{{ form.first_name.value() }}"{% endif %}>
+            </div>
+        </div>
+
+        {% if form.last_name.errors %}
+            <div class="form-group row">
+                <div class="alert alert-danger alert-profile-form col mb-0" role="alert">
+                    {{ form.last_name.errors }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group row">
+            <label for="inputLastName" class="col-sm-2 col-form-label">Last name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputLastName" placeholder="Last name"
+                       name="{{ form.last_name.html_name }}"
+                       {% if form.last_name.value() %}value="{{ form.last_name.value() }}"{% endif %}>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Create user</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

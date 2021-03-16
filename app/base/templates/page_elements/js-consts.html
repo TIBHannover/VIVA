@@ -1,0 +1,75 @@
+{# Python variables have to be added in viva/jinja2.py #}
+<script type="text/javascript">
+    /**
+     * Settings constants
+     */
+    const UploadLimit = {{ UPLOAD_LIMIT }};
+    const LoginUrls = ['{{ LOGIN_URL }}', '{{ ACCOUNTS_LOGIN_URL }}'];
+    const MessageTitleSessionTimeout = 'Session expiration';
+
+    class FlaskConfig {
+        static URL_BASE = '{{ KerasFlaskConfig.Flask.URL }}';
+        static URL_SSE = '{{ KerasFlaskConfig.Flask.URL_SSE }}';
+        static Training = class {
+            static URL_START = '{{ KerasFlaskConfig.Flask.Training.URL_START }}';
+            static URL_STOP = '{{ KerasFlaskConfig.Flask.Training.URL_STOP }}';
+            static URL_UPDATE = '{{ KerasFlaskConfig.Flask.Training.URL_UPDATE }}';
+            static URL_LOG = '{{ KerasFlaskConfig.Flask.Training.URL_LOG }}';
+        };
+        static Inference = class {
+            static URL_START = '{{ KerasFlaskConfig.Flask.Inference.URL_START }}';
+            static URL_STOP = '{{ KerasFlaskConfig.Flask.Inference.URL_STOP }}';
+            static URL_UPDATE = '{{ KerasFlaskConfig.Flask.Inference.URL_UPDATE }}';
+            static URL_LOG = '{{ KerasFlaskConfig.Flask.Inference.URL_LOG }}';
+        };
+        static Export = class {
+            static URL_START = '{{ KerasFlaskConfig.Flask.Export.URL_START }}';
+            static URL_STOP = '{{ KerasFlaskConfig.Flask.Export.URL_STOP }}';
+            static URL_UPDATE = '{{ KerasFlaskConfig.Flask.Export.URL_UPDATE }}';
+        };
+        static Sse = class {
+            static TRAIN_INFO = '{{ KerasFlaskConfig.Flask.Sse.TYPE_TRAINING_INFO }}';
+            static TRAIN_LOG = '{{ KerasFlaskConfig.Flask.Sse.TYPE_TRAINING_LOG }}';
+            static INF_INFO = '{{ KerasFlaskConfig.Flask.Sse.TYPE_INFERENCE_INFO }}';
+            static INF_LOG = '{{ KerasFlaskConfig.Flask.Sse.TYPE_INFERENCE_LOG }}';
+            static EXPORT_INFO = '{{ KerasFlaskConfig.Flask.Sse.TYPE_EXPORT_INFO }}';
+            static KEY_LOG_MESSAGE = '{{ KerasFlaskConfig.Flask.Sse.KEY_LOG_MESSAGE }}';
+            static KEY_LOG_CLEAR = '{{ KerasFlaskConfig.Flask.Sse.KEY_LOG_CLEAR }}';
+        };
+    }
+
+    const GridConfig = {
+        PARAMETER_PAGE: '{{ GridConfig.PARAMETER_PAGE }}',
+        PARAMETER_ELEMENT_COUNT: '{{ GridConfig.PARAMETER_ELEMENT_COUNT }}',
+        PARAMETER_ANNOTATION_CLASS: '{{ GridConfig.PARAMETER_ANNOTATION_CLASS }}',
+        ELEMENT_ADDITIONAL_VALUE_SCORE: '{{ GridConfig.ELEMENT_ADDITIONAL_VALUE_SCORE }}',
+        URL_SAVE_ANNOTATIONS: '{{ url("base:save-grid-annotations") }}',
+        URL_SAVE_ANNOTATION_BBOX: '{{ url("face_recognition:save-grid-annotation-bbox") }}',
+        URL_IMAGE_NOT_FOUND: '{{ static("images/fa-far-file-excel-secondary.svg") }}'
+    };
+
+    const AsyncActionConfig = {
+        KEY_RUN: '{{ AsyncActionConfig.KEY_RUN }}',
+        KEY_DEPENDENCY_RUN: '{{ AsyncActionConfig.KEY_DEPENDENCY_RUN }}',
+        KEY_DEPENDENCY_PREREQUISITE: '{{ AsyncActionConfig.KEY_DEPENDENCY_PREREQUISITE }}',
+        KEY_OPTIONS: '{{ AsyncActionConfig.KEY_OPTIONS }}',
+        KEY_TIME: '{{ AsyncActionConfig.KEY_TIME }}',
+        KEY_TIME_ETE: '{{ AsyncActionConfig.KEY_TIME_ETE }}',
+        KEY_EXCEPTION: '{{ AsyncActionConfig.KEY_EXCEPTION }}',
+        KEY_CURRENT: '{{ AsyncActionConfig.KEY_CURRENT }}',
+        KEY_TOTAL: '{{ AsyncActionConfig.KEY_TOTAL }}'
+    }
+
+    const PersonTrainInferConfig = {
+        URL: '{{ PersonTrainInferConfig.URL }}'
+    };
+
+    /**
+     * Setup ajax - always set required security token
+     */
+    $(function () {
+        $.ajaxSetup({
+            headers: {"X-CSRFToken": Cookies.get('csrftoken')}
+        });
+    });
+</script>

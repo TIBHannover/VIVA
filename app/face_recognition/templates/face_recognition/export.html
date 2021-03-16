@@ -1,0 +1,59 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('face_recognition/js/export.js') }}"></script>
+{% endblock %}
+
+{% block sidebar_content %}
+    {% if retrieval_exists %}
+        <form id="exportForm" action="javascript:void(0);">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Prediction threshold</span>
+                </div>
+                <input type="text" class="form-control" id="exportThresholdText" type="number" step="0.01" min="0" value="0.8">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary" id="exportBtn">
+                        <span class="spinner-grow spinner-grow-sm" id="exportSpinner" role="status" aria-hidden="true"
+                              hidden></span>
+                        <span class="sr-only" id="exportSpinnerText" hidden>Loading...</span>
+                        <span id="exportText">Download</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <br>
+
+        <script type="text/javascript">
+            setInputFilter(document.getElementById("exportThresholdText"), function(value) {
+                return /^\d*\.?\d*$/.test(value); // Allow digits and '.' only, using a RegExp
+            });
+
+            $(function () {
+                $('#exportForm').on('submit', function () {
+                    let exportThresholdText = document.getElementById("exportThresholdText").value
+
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ url("face_recognition:export_query") }}',
+                        dataType: 'json',
+                        cache: false,
+                        data: {export_threshold: exportThresholdText},
+                        success: function (data) {
+                            downloadCSV('person_predictions.csv', data)
+                        },
+                        error: function (xhr, status, error) {
+                            addMessage("Error", "fa-exclamation-circle text-danger",
+                                "An error occurred while processing the request to export predictions:\n"
+                                + error);
+                        }
+                    });
+                });
+            });
+        </script>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No inference results to export exist yet. Please run a complete inference first!
+        </div>
+    {% endif %}
+{% endblock %}

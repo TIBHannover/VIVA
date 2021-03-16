@@ -1,0 +1,144 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('concept_classification/css/data-similarity-search.css') }}" rel="stylesheet">
+    {{ includeTemplatesCSS(['page_elements/grid.html']) }}
+{% endblock %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('concept_classification/js/data-similarity-search.js') }}"></script>
+    {{ includeTemplatesJS(['page_elements/grid.html']) }}
+{% endblock %}
+
+
+{% block sidebar_content %}
+    <form id="simSearchForm" class="mb-2" action="javascript:void(0);">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-outline-primary active" onclick="setSimSearchMode('upload');"
+                           id="simSearchModeUploadLabel">
+                        <input type="radio" name="mode" class="sim-search-mode" autocomplete="off" value="upload"
+                               checked>
+                        Upload
+                    </label>
+                    <label class="btn btn-outline-primary rounded-0" onclick="setSimSearchMode('url');">
+                        <input type="radio" name="mode" class="sim-search-mode" autocomplete="off" value="url">
+                        URL
+                    </label>
+                    <label class="btn btn-outline-primary rounded-0" id="simSearchSelectBtn" data-toggle="modal"
+                           data-target="#selectAnnotatedImages" onclick="setSimSearchMode('select');">
+                        <input type="radio" name="mode" class="sim-search-mode" autocomplete="off" value="select">
+                        Select
+                    </label>
+                </div>
+            </div>
+            <input type="file" class="form-control" id="simSearchUpload"
+                   accept=".png,.jpg,.jpeg,.gif,.bmp,.tiff,.tif">
+            <input type="url" class="form-control d-none" id="simSearchUrl" placeholder="Please enter URL to image">
+            <input class="form-control d-none" id="simSearchSelect" readonly
+                   placeholder="Please use the pop-up dialog to select an image">
+            <input type="hidden" class="form-control" id="simSearchSelectValue">
+            <div class="input-group-append">
+                <select class="form-control rounded-0 selectpicker" data-style="h-100" id="simSearchMaxRes">
+                    {% for count in [50, 100, 250, 500, 750, 2000, 5000, 10000] %}
+                        <option value="{{ count }}">{{ count }}</option>
+                    {% endfor %}
+                </select>
+                {# Is it possible to use ES_MAX_RESULTS from settings class here?                   #}
+                <button type="submit" class="btn btn-primary" id="simSearchBtn">
+                    <span class="spinner-grow spinner-grow-sm" id="simSearchSpinner" role="status" aria-hidden="true"
+                          hidden></span>
+                    <span class="sr-only" id="simSearchSpinnerText" hidden>Loading...</span>
+                    <span id="simSearchText">Go!</span>
+                </button>
+            </div>
+        </div>
+    </form>
+    {% with grid_id = 'gridSimilaritySearch', grid_bar = ['dimension', 'pagination', 'annotation'] %}
+        {% include 'page_elements/grid.html' %}
+        <script type="text/javascript">
+            $(function () {
+                let simSearchMode = new HTMLInputRadioSimSearch('.sim-search-mode', 'upload');
+                let simSearchFile = new HTMLInputFile('#simSearchUpload');
+                let grid = new GridAnnotation(
+                    '{{ grid_id }}',
+                    '{{ url("concept_classification:data_similarity_search_query") }}',
+                    {
+                        'mode': simSearchMode,
+                        'file': simSearchFile,
+                        'url': new HTMLInputText('#simSearchUrl', ''),
+                        'select': new HTMLInputText('#simSearchSelectValue', ''),
+                        'max': new HTMLInputSelect('#simSearchMaxRes', 50)
+                    },
+                    {{ class_id }},
+                    '#simSearchForm'
+                );
+                grid.enableElementPrefetching();
+                grid.on('updated', function (data) {
+                    simSearchLoadingReset();
+                });
+                grid.on('updatedSuccess', function (data) {
+                    addMessage("Similarity Search", "fa-check text-success",
+                        data['count'] + " images found in " + Math.round(data['time'] * 100) / 100 + " seconds", 5);
+                });
+                grid.on('updatedError', function (data) {
+                    addMessage("Similarity Search", "fa-exclamation-circle text-warning", data, 7);
+                });
+                $('#simSearchForm').on('submit', function () {
+                    // remove the selected upload file of the form if mode is not 'upload' otherwise the file will
+                    // always be uploaded to server
+                    if (simSearchMode.getValue() !== 'upload') {
+                        simSearchFile.clear();
+                    } else {
+                        if (fileExceedsUploadLimit(simSearchFile)) {
+                            return;
+                        }
+                    }
+                    grid.proposeUpdate(function () {
+                        simSearchLoadingAnimation();
+                        grid.elementBuffer = [];  // trigger "re-query"
+                    });
+                });
+            });
+        </script>
+    {% endwith %}
+
+    <div class="modal" id="selectAnnotatedImages" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Select an image
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="selectAnnotatedImagesBody" class="modal-body">
+                    {% with grid_id = 'gridSimilaritySelection', grid_bar = ['dimension', 'pagination', ''] %}
+                        {% include 'page_elements/grid.html' %}
+                        <script type="text/javascript">
+                            let simSearchSelectionGrid;
+                            $(function () {
+                                simSearchSelectionGrid = new GridSelection(
+                                    '{{ grid_id }}',
+                                    '{{ url("concept_classification:data_review_query") }}',
+                                    {
+                                        'difficult': new HTMLStaticField('0'),
+                                        'groundtruth': new HTMLStaticField('1'),
+                                    });
+                                $('#simSearchSelectBtn').on('click', function () {
+                                    simSearchSelectionGrid.update();
+                                    $('#simSearchSelectBtn').off('click');
+                                });
+                            });
+                        </script>
+                    {% endwith %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

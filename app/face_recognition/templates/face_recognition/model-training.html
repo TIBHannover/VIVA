@@ -1,0 +1,127 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('concept_classification/css/model-training.css') }}" rel="stylesheet">
+    <link href="{{ static('concept_classification/css/model-hardware-info.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('face_recognition/js/model-training.js') }}"></script>
+{% endblock %}
+
+
+{% block sidebar_content %}
+    <div class="border border-primary rounded p-2">
+        <div id="trainingControlSpinner" class="row align-self-center justify-content-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+        </div>
+
+        <div class="alert alert-danger mb-1 d-none" id="trainingControlStatusFailed" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Cannot connect to the training service!
+        </div>
+
+        <div class="d-none" id="trainingControlContent">
+            <!-- Training status banner -->
+            <div>
+                <div class="alert alert-info mb-1" id="trainingControlStatusStop" role="alert">
+                    <i class="fas fa-stop mr-2"></i>Training is currently stopped
+                </div>
+                <div class="alert alert-success mb-1" id="trainingControlStatusRunning" role="alert">
+                    <i class="fas fa-play mr-2"></i>Training is currently running
+                </div>
+            </div>
+
+            <!-- Training control buttons -->
+            <div class="mt-2" id="trainingControlBox">
+                <button type="button" class="btn btn-success" id="controlStart" disabled
+                        onclick="startTraining()">
+                    Start training
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+    <div class="border border-primary rounded p-2">
+        <div id="trainingFeedbackSpinner" class="row align-self-center justify-content-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+        </div>
+
+        <div class="alert alert-danger mb-1 d-none" id="trainingFeedbackStatusFailed" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Cannot connect to the training service!
+        </div>
+
+        <div class="d-none" id="trainingFeedbackContent">
+            <!-- Training feedback status banner (no yet started / exception) -->
+            <div>
+                <div class="alert alert-info mb-1 d-none" id="trainingFeedbackStatusNoData" role="alert">
+                    <i class="fas fa-info-circle mr-2"></i> No training session results yet!
+                </div>
+                <div class="alert alert-danger mb-1 d-none" id="trainingFeedbackStatusException" role="alert">
+                    <div class="d-flex">
+                        <div class="pr-2"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div>
+                            Last session was canceled:<br>
+                            <span id="trainingFeedbackStatusExceptionText"></span><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container h5 mt-2 d-none" id="trainingFeedbackStatsBox">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fas fa-sign-out-alt"></i> Started <span id="trainingTimeStart">START_POINT</span>
+                    </div>
+                    <div class="col">
+                        <i class="fas fa-hourglass-half"></i>
+                        Runtime <span id="trainingTimeRuntime">RUNTIME</span>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3">
+                        Facial Feature Extraction
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3">
+                        <span id="embeddingTotalProcessed"></span> of <span id="embeddingTotalCount"></span>
+                        faces processed
+                    </div>
+                    <div class="col">
+                        <div class="progress">
+                            <div class="progress-bar" id="embeddingProgress" role="progressbar"
+                                 aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3">
+
+                        <span id="trainingResults"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        setTrainingUrl('{{ url("face_recognition:model_training_start") }}');
+        setTrainingStatus(jobStatus.STOPPED);
+        setTrainingVisibility();
+        faceServiceUrl = "{{ FACE_SERVICE_URL }}";
+        updateInfos();
+        enableStartButton();
+        setTrainingTimeStrings();
+    </script>
+
+{% endblock %}

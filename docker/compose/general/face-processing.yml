@@ -1,0 +1,14 @@
+image: viva_face-processing:${TAG_FACE_PROCESSING}-cpu
+build:
+  context: ./build/face-processing
+  args:
+    PARENT_IMAGE: continuumio/miniconda3
+command: bash "scripts/start_face-processing.sh"
+volumes:
+- ./data/face-processing/models:/code/models
+- ./data/face-processing/index:/code/index
+- ../face-processing/src:/code/src
+- ${MEDIA_ROOT:-../app/media}:/media:ro
+env_file:
+- .env
+- env/face-processing.env

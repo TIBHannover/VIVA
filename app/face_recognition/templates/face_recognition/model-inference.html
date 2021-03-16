@@ -1,0 +1,210 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('face_recognition/css/model-inference.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('face_recognition/js/model-inference.js') }}"></script>
+{% endblock %}
+
+
+{% block sidebar_content %}
+    <div class="border border-primary rounded p-2">
+        <div id="faceProcessingLoadingSpinner" class="row align-self-center justify-content-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+        </div>
+
+        <div class="alert alert-danger mb-1 d-none" id="faceProcessingStatusFailed" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Cannot connect to the inference service!
+        </div>
+
+        <div class="d-none" id="faceProcessingContent">
+            <!-- Inference status banner -->
+            <div>
+                <div class="alert alert-info mb-1" id="faceProcessingStatusStop" role="alert">
+                    <i class="fas fa-stop mr-2"></i>Face processing is currently stopped
+                </div>
+                <div class="alert alert-success mb-1" id="faceProcessingStatusRunning" role="alert">
+                    <i class="fas fa-play mr-2"></i>Face processing is currently running
+                </div>
+            </div>
+
+            <!-- Inference control buttons -->
+            <div class="mt-2">
+                <button type="button" class="btn btn-success" id="faceProcessingStart" disabled
+                        onclick="startFaceProcessing()">
+                    Start Face Processing
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <br>
+    <div class="border border-primary rounded p-2">
+        <div id="faceProcessingFeedbackSpinner" class="row align-self-center justify-content-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+        </div>
+
+        <div class="alert alert-danger mb-1 d-none" id="faceProcessingFeedbackStatusFailed" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Cannot connect to the inference service!
+        </div>
+
+        <div class="d-none" id="faceProcessingFeedbackContent">
+            <div class="alert alert-info mb-1 d-none" id="faceProcessingFeedbackStatusNoData" role="alert">
+                <i class="fas fa-info-circle mr-2"></i> No face processing session was started yet!
+            </div>
+
+            <div class="alert alert-danger mb-1" id="faceProcessingStatusException" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Last face processing stopped:<br>
+                <span id="faceProcessingStatusExceptionText"></span><br>
+            </div>
+
+            <div class="text-center h5 mt-2 d-none" id="faceProcessingFeedbackStatsBoxStopped">
+                <i class="fas fa-hourglass-half"></i>
+                Runtime <span id="faceProcessingFeedbackTimeRuntimeStopped">RUNTIME</span>
+            </div>
+
+            <div class="container h5 mt-2 d-none" id="faceProcessingFeedbackStatsBox">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fas fa-sign-out-alt"></i> Started <span id="faceProcessingTimeStart">START_POINT</span>
+                    </div>
+                    <div class="col">
+                        <i class="fas fa-hourglass-half"></i>
+                        Runtime <span id="faceProcessingTimeRuntime">RUNTIME</span>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3">
+                        Face Detection
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3">
+                        <span id="detectionTotalProcessed"></span> of <span id="detectionTotalCount"></span>
+                        images processed
+                    </div>
+                    <div class="col">
+                        <div class="progress">
+                            <div class="progress-bar" id="detectionProgress" role="progressbar"
+                                 aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3">
+                        Facial Feature Extraction
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3">
+                        <span id="embeddingTotalProcessed"></span> of <span id="embeddingTotalCount"></span>
+                        faces processed
+                    </div>
+                    <div class="col">
+                        <div class="progress">
+                            <div class="progress-bar" id="embeddingProgress" role="progressbar"
+                                 aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="border border-primary rounded p-2">
+        <div id="classificationLoadingSpinner" class="row align-self-center justify-content-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+        </div>
+
+        <div class="alert alert-danger mb-1 d-none" id="classificationStatusFailed" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Cannot connect to the inference service!
+        </div>
+
+        <div class="d-none" id="classificationContent">
+            <!-- Inference status banner -->
+            <div>
+                <div class="alert alert-info mb-1" id="classificationStatusStop" role="alert">
+                    <i class="fas fa-stop mr-2"></i>Classification is currently stopped
+                </div>
+                <div class="alert alert-success mb-1" id="classificationStatusRunning" role="alert">
+                    <i class="fas fa-play mr-2"></i>Classification is currently running
+                </div>
+            </div>
+
+            <!-- Inference control buttons -->
+            <div class="mt-2">
+                <button type="button" class="btn btn-success" id="controlStartClassification" disabled
+                        onclick="startClassification()">
+                    Start Classification
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="border border-primary rounded p-2">
+        <div id="classificationFeedbackSpinner" class="row align-self-center justify-content-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+        </div>
+
+        <div class="alert alert-danger mb-1 d-none" id="classificationFeedbackStatusFailed" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Cannot connect to the inference service!
+        </div>
+
+        <div class="d-none" id="classificationFeedbackContent">
+            <div class="alert alert-info mb-1 d-none" id="classificationFeedbackStatusNoData" role="alert">
+                <i class="fas fa-info-circle mr-2"></i> No classification session was started yet!
+            </div>
+
+            <div class="alert alert-danger mb-1" id="classificationStatusException" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Last classification stopped:<br>
+                <span id="classificationStatusExceptionText"></span><br>
+            </div>
+
+            <div class="text-center h5 mt-2 d-none" id="classificationFeedbackStatsBoxStopped">
+                <i class="fas fa-hourglass-half"></i>
+                Runtime <span id="classificationFeedbackTimeRuntimeStopped">RUNTIME</span>
+            </div>
+
+            <div class="container h5 mt-2 d-none" id="classificationFeedbackStatsBox">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fas fa-sign-out-alt"></i> Started <span id="classificationTimeStart">START_POINT</span>
+                    </div>
+                    <div class="col">
+                        <i class="fas fa-hourglass-half"></i>
+                        Runtime <span id="classificationTimeRuntime">RUNTIME</span>
+                    </div>
+                </div>
+                <div class="row2">
+                    <span id="totalClassifications"> </span> total Images classified.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        setFaceProcessingStatus(jobStatus.STOPPED);
+        setClassificationStatus(jobStatus.STOPPED);
+        faceServiceUrl = "{{ FACE_SERVICE_URL }}";
+        setFaceProcessingUrl('{{ url("face_recognition:model_inference_start") }}');
+        setClassificationUrl('{{ url("face_recognition:model_classify_persons") }}');
+        updateInfos();
+        setFaceProcessingButton();
+        setClassificationButton();
+        setFaceProcessingTimeStrings();
+        setClassificationTimeStrings();
+    </script>
+{% endblock %}

@@ -1,0 +1,17 @@
+image: viva_app:${TAG_CUSTOM_DJANGO}
+build:
+  context: ./build/django
+  args:
+    TAG_PYTHON: ${TAG_PYTHON}
+command: bash "/scripts/start_rq.sh"
+working_dir: /code
+volumes:
+- ../app:/code:ro
+- ${MEDIA_ROOT:-../app/media}:/media
+env_file:
+- .env
+- env/django.env
+- env/django_keras.env
+- env/django_nginx.env
+depends_on:
+- redis

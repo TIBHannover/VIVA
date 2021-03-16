@@ -1,0 +1,7 @@
+image: viva_keras:${TAG_CUSTOM_KERAS}-gpu
+build:
+  args:
+    TAG_GPU: -gpu
+runtime: nvidia
+environment:
+- GPU_MODE=1

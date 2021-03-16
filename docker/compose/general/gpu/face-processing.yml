@@ -1,0 +1,5 @@
+image: viva_face-processing:${TAG_FACE_PROCESSING}-gpu
+build:
+  args:
+    PARENT_IMAGE: anibali/pytorch:1.7.0-cuda11.0
+runtime: nvidia

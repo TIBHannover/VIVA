@@ -1,0 +1,132 @@
+{#
+    Template for (lazy loading) media visualization in the form of a grid
+
+    The grid will be build by JavaScript. A request to a given URL will be made to retrieve the content that should be
+    displayed in the grid. The response has to be a JSON-object that complies the specifications down bellow. Above and
+    bellow the grid content there will be bars placed (identical) that can contain controls to control the grid.
+    To build the grid JavaScript will make use of HTML-templates injected by this template (there is a template for the
+    bar and the two media grid element types (image, video)). These injected HTML-templates may (!) vary for every
+    grid based on the parameters defined when including this template (this primary applies for bar templates). For
+    grid element templates there are always all types imported because the grid has to be instantiated using a
+    specific JS class which for itself stands for a specific grid element type. Adding another parameter for this
+    template specifying the element template would imply a redundant specification and is therefore not available.
+
+    Template parameters (Jinja2 variables):
+    - grid_id: An unique identifier for the grid (at least for a page)
+    - grid_bar: A list of templates that should be used inside the surrounding bars. Order of the displayed elements
+                are left (start of list) to right (end of list). The list must only contain the last specific part of
+                the template path. Eg.: For template '[...]/templates/page_elements/grid/bar-dimensions.html' only use
+                'dimensions' for the list (When creating a new template it should comply this path specification)
+
+    Instantiating JS class in including template:
+    - Basic grid
+        new Grid(id, apiUrl, queryParamClassMap)
+        - id: has to be same as grid_id used for this template
+        - apiUrl: the URL for requesting grid elements
+        - queryParamClassMap (optional): a map containing additional parameters for the request (apiUrl) that are
+                                         based on the state of HTML elements. The representation of the map:
+                                         - key: Will be the same key used in API request
+                                         - value: Has to be an instance of HTMLInput (html-input.js) where the
+                                                  method 'getValue' will extract the current value of the corresponding
+                                                  HTML element (the value of 'getParameterValue' will be used in API
+                                                  request)
+        - reduceHeightElem (optional): if there is an element above the grid the height of the grid will be adjusted
+                                       according to the provided element to fill the whole viewport height
+                                       (prevent scrolling page)
+    - Annotation grid
+        new GridAnnotation(id, apiUrl, queryParamHtmlMap, annotationClassId)
+        - same as above
+        - annotationClassId (optional): the id of the class for which to show the annotations for
+    - Annotation grid with prediction scores
+        new GridAnnotationPrediction(id, apiUrl, queryParamHtmlMap, annotationClassId)
+        - same as above
+
+    Call 'proposeUpdate()' of the JS grid instance to trigger the first build of the grid.
+    Or you might consider modifying the grid parameters in JS before updating it then use the same function providing
+    the parameter 'beforeUpdateFunction' that contains the modifications in a wrapped function (because the update
+    of the grid might get canceled by the user - therefore your modifications can be kept back).
+
+    Prefetching of elements can be enabled by calling: "grid.enableElementsPrefetching()"
+    Enabled this feature if the given API does not realize the lazy concept - returning allways all given elements.
+    In this mode the grid will use the internal buffer for pagination.
+
+    HTML input elements can be reset if an error occured on API call - this can avoid confusion if the grid with the
+    old grid is display but the input elements contain the contents for the failed request. To enable restoring the
+    HTML input values from previous successfull API call execute "grid.enableRestoreHTMLonError()".
+
+    Request JSON-object specification:
+    The basic specification can be found in the documentation of the function 'serialize_images' in 'models.py'.
+#}
+
+{% macro css() %}
+    <link href="{{ static('base/css/page_elements/grid.css') }}" rel="stylesheet">
+    <link href="{{ static('base/css/page_elements/grid/grid-annotation.css') }}" rel="stylesheet">
+    <link href="{{ static('base/css/page_elements/grid/grid-annotation-prediction.css') }}" rel="stylesheet">
+    <link href="{{ static('base/css/page_elements/grid/grid-selection.css') }}" rel="stylesheet">
+{% endmacro %}
+
+{% macro js() %}
+    <script type="text/javascript" src="{{ static('base/js/page_elements/grid.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/page_elements/grid/grid-bar.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/page_elements/grid/grid-annotation.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/page_elements/grid/grid-annotation-face.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/page_elements/grid/grid-annotation-prediction.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/page_elements/grid/grid-selection.js') }}"></script>
+    <script type="text/javascript" src="{{ static('base/js/page_elements/grid/grid-selection-face.js') }}"></script>
+{% endmacro %}
+
+{# Loading animation #}
+<div class="row align-self-center justify-content-center grid-loader d-none" id="{{ grid_id }}Loading">
+    <div class="spinner-border text-primary" role="status"></div>
+    <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+</div>
+
+{# Grid alerts #}
+<div class="alert alert-info grid-no-elements d-none" id="{{ grid_id }}NoElements" role="alert">
+    There are no elements to display!
+</div>
+<div class="alert alert-warning grid-no-elements d-none" id="{{ grid_id }}Exception" role="alert">
+    Exception when requesting data for the grid.<br>
+    <span id="{{ grid_id }}ExceptionText"></span>
+</div>
+
+{# Grid bar template #}
+<div class="d-none" id="{{ grid_id }}BarTemplate">
+    <div>
+        {% if grid_bar %}
+            <div class="d-flex flex-row flex-wrap justify-content-between bg-light">
+                {% for grid_bar_item in grid_bar %}
+                    <div class="p-2">
+                        {% if grid_bar_item != '' %}
+                            {% include 'page_elements/grid/bar-' + grid_bar_item + '.html' %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{# Grid element templates #}
+<div class="d-none" id="{{ grid_id }}ElementTemplates">
+    {% for grid_element in ['image', 'video'] %}
+        {% with template_class_suffix = 'basic' %}
+            {% include 'page_elements/grid/' + grid_element + '.html' %}
+        {% endwith %}
+        {% include 'page_elements/grid/annotation.html' %}
+        {% include 'page_elements/grid/annotation-prediction.html' %}
+        {% include 'page_elements/grid/selection.html' %}
+    {% endfor %}
+</div>
+
+{# Grid itself - to be filled by JS #}
+<div class="grid" id="{{ grid_id }}">
+    <div class="grid-bar grid-bar-top" id="{{ grid_id }}BarTop"></div>
+    <div class="container grid-content" id="{{ grid_id }}Content"></div>
+</div>
+
+{# Grid modals #}
+<div class="grid-modals" id="{{ grid_id }}Modals">
+    {% include 'page_elements/grid/modal-element.html' %}
+    {% include 'page_elements/grid/modal-annotation.html' %}
+</div>

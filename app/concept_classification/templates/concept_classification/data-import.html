@@ -1,0 +1,71 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block css %}{{ super() }}
+    {{ includeTemplatesCSS(['page_elements/grid.html']) }}
+{% endblock %}
+
+{% block js %}{{ super() }}
+    {{ includeTemplatesJS(['page_elements/grid.html']) }}
+    <script type="text/javascript" src="{{ static('base/js/page/data-import.js') }}"></script>
+{% endblock %}
+
+{% block sidebar_content %}
+    <form id="sequenceAnnotationForm" action="javascript:void(0);">
+        <div class="input-group">
+            <input type="file" class="form-control h-100" id="sequenceAnnotationFile" accept=".csv">
+            <div class="input-group-append">
+                <select class="form-control rounded-0 selectpicker" data-style="h-100" id="sequenceAnnotationMaxRes">
+                    {% for count in [50, 100, 250, 500, 750, 1000] %}
+                        <option {% if max_results %}
+                            {% if max_num_results|int == count %}selected="selected"{% endif %}
+                        {% endif %}>{{ count }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary" id="sequenceAnnotationBtn">
+                    <span class="spinner-grow spinner-grow-sm" id="sequenceAnnotationSpinner" role="status" aria-hidden="true"
+                          hidden></span>
+                    <span class="sr-only" id="sequenceAnnotationSpinnerText" hidden>Loading...</span>
+                    <span id="sequenceAnnotationText">Import</span>
+                </button>
+            </div>
+        </div>
+    </form>
+    <br>
+
+    {% with grid_id = 'gridSequenceAnnotation', grid_bar = ['dimension', 'pagination', 'annotation'] %}
+        {% include 'page_elements/grid.html' %}
+        <script type="text/javascript">
+            $(function () {
+                let sequenceAnnotationFile = new HTMLInputFile('#sequenceAnnotationFile');
+                let grid = new GridAnnotation(
+                    '{{ grid_id }}',
+                    '{{ url("concept_classification:data_sequence_annotation_query") }}',
+                    {
+                        'upload': sequenceAnnotationFile,
+                        'max': new HTMLInputSelect('#sequenceAnnotationMaxRes', 50)
+                    },
+                    {{ class_id }}
+                );
+                grid.enableElementPrefetching();
+                grid.on('updated', function (data) {
+                    sequenceAnnotationLoadingReset();
+                });
+                grid.on('updatedError', function (data) {
+                    addMessage("Sequence Annotation", "fa-exclamation-circle text-warning", data, 7);
+                });
+                $('#sequenceAnnotationForm').on('submit', function () {
+                    // remove the selected upload file of the form if mode is not 'upload' otherwise the file will
+                    // always be uploaded to server
+                    if (fileExceedsUploadLimit(sequenceAnnotationFile)) {
+                        return;
+                    }
+                    grid.proposeUpdate(function () {
+                        sequenceAnnotationLoadingAnimation();
+                        grid.elementBuffer = [];  // trigger "re-query"
+                    });
+                });
+            });
+        </script>
+    {% endwith %}
+
+{% endblock %}

@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+beautifulsoup4 = "*"
+demjson = ">=2.2,<3.0"
+Django = ">=2.0,<3.0"
+django-defender = "*"
+django-jinja = "*"
+django-rq = "*"
+django-simple-menu = "*"
+h5py = "*"
+icrawler = "==0.6.3"
+imbalanced-learn = "*"
+Jinja2 = "*"
+numpy = "*"
+psycopg2-binary = ">=2.7,<3.0"
+requests = "*"
+scikit-learn = "==0.24.0"
+
+[requires]
+python_version = "3.7"  # python 3.8 does not work with django_rq in container

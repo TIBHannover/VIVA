@@ -1,0 +1,14 @@
+image: viva_tfs:${TAG_CUSTOM_TFS}-cpu
+build:
+  context: ./build/tf_serving
+  args:
+    TAG_TENSORFLOW: ${TAG_TENSORFLOW}
+    TAG_GPU: ''
+command: python3.7 "/code/service.py"
+volumes:
+- ./build/tf_serving:/code
+- ./data/concept-classification/models:/models
+env_file:
+- .env
+- env/keras_tf-serving.env
+- env/tf-serving.env

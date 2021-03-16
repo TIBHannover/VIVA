@@ -1,0 +1,27 @@
+<div class="dropdown d-inline-block grid-bar-dimensions">
+    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdown-menu-button-cols"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+        <span class="grid-bar-col-count">NUM_COLS</span> cols
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdown-menu-button-cols">
+        {% for i in range(1, 11) %}
+            <a class="dropdown-item grid-bar-dimensions-cols" data-value="{{ loop.index }}">
+                {{ loop.index }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+in
+<div class="dropdown d-inline-block grid-bar-dimensions">
+    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdown-menu-button-rows"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+        <span class="grid-bar-row-count">NUM_ROWS</span> rows
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdown-menu-button-rows">
+        {% for i in range(1, 11) %}
+            <a class="dropdown-item grid-bar-dimensions-rows" data-value="{{ loop.index }}">
+                {{ loop.index }}
+            </a>
+        {% endfor %}
+    </div>
+</div>

@@ -1,0 +1,38 @@
+{#
+    Template to place the asynchronous log (template 'async-log.html') in a collapsable box
+
+    Jinja context variables that are the same as in 'async-log.html'. See template documentation head of
+    'async-log.html' for more details.
+
+    Use the Javascript class "AsyncLogBox" for client side functionality.
+#}
+{% from 'macros.html' import includeTemplatesCSS, includeTemplatesJS %}
+
+{% macro css() %}
+    {{ includeTemplatesCSS(['concept_classification/page_elements/async-log.html']) }}
+{% endmacro %}
+
+{% macro js() %}
+    {{ includeTemplatesJS(['concept_classification/page_elements/async-log.html']) }}
+    <script type="text/javascript" src="{{ static('concept_classification/js/page_elements/async-log-box.js') }}"></script>
+{% endmacro %}
+
+<div class="accordion accordion-chevron-indicator mt-1" id="{{ async_log_id }}Box">
+    <div class="card border-bottom">
+        <div class="card-header p-0" id="{{ async_log_id }}BoxHeading">
+            <h2 class="mb-0">
+                <button class="btn btn-link collapsed w-100 text-left" id="{{ async_log_id }}BoxButton" type="button"
+                        data-toggle="collapse" data-target="#{{ async_log_id }}BoxCollapse"
+                        aria-expanded="false" aria-controls="{{ async_log_id }}BoxCollapse">
+                    <label class="mb-0" for="{{ async_log_id }}TextArea">Log</label>
+                </button>
+            </h2>
+        </div>
+        <div id="{{ async_log_id }}BoxCollapse" class="collapse" aria-labelledby="{{ async_log_id }}BoxHeading"
+             data-parent="#{{ async_log_id }}Box">
+            <div class="card-body p-1 pl-2 pr-2">
+                {% include 'concept_classification/page_elements/async-log.html' %}
+            </div>
+        </div>
+    </div>
+</div>

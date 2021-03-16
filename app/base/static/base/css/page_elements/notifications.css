@@ -1,0 +1,15 @@
+#toastContainer {
+    height: 0;
+    top: 4em !important;
+}
+
+#messageTemplateContainer {
+    display: none;
+}
+
+#messages {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 200px;
+}

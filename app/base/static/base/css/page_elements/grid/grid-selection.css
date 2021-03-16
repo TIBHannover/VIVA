@@ -1,0 +1,12 @@
+.grid-selection .selection {
+    border: .75rem solid;
+}
+
+.grid-selection :not(.selected-element) {
+    border-color: transparent !important;
+}
+
+.grid-selection .selected-element {
+    border-color: lightskyblue !important;
+    background-color: lightskyblue !important;
+}

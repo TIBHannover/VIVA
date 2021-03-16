@@ -1,0 +1,26 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block css %}{{ super() }}
+    {{ includeTemplatesCSS(['page_elements/grid.html']) }}
+{% endblock %}
+
+{% block js %}{{ super() }}
+    {{ includeTemplatesJS(['page_elements/grid.html']) }}
+{% endblock %}
+
+
+{% block sidebar_content %}
+    {% with grid_id = 'gridReview', grid_bar = ['dimension', 'pagination', 'annotation'] %}
+        {% include 'page_elements/grid.html' %}
+        <script>
+            $(function () {
+                let grid = new GridAnnotation('{{ grid_id }}', '{{ url("concept_classification:data_review_query") }}',
+                    {
+                        'difficult': new HTMLStaticField({{ 1 if difficult else 0 }}),
+                        'groundtruth': new HTMLStaticField({{ 1 if groundtruth else 0 }}),
+                    }, {{ class_id }});
+                grid.proposeUpdate();
+            });
+        </script>
+    {% endwith %}
+{% endblock %}

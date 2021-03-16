@@ -1,0 +1,54 @@
+{#
+    Template for training charts. Single use per page only (hardcoded ids)!
+    Makes use of Jinja template variable "async_id" - use only in combination with "async-action".
+
+    Use the Javascript class "TrainingCharts" for client side functionality.
+#}
+
+{% macro css() %}
+    <link href="{{ static('concept_classification/css/page_elements/training-charts.css') }}" rel="stylesheet">
+{% endmacro %}
+
+{% macro js() %}
+    <script type="text/javascript"
+            src="{{ static('concept_classification/js/page_elements/training-charts.js') }}"></script>
+{% endmacro %}
+
+<div>
+    <div class="{{ async_id }}-status-disconnected alert alert-danger mb-1 d-none" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>No connection to internal server. Trying to connect...
+    </div>
+    <div class="{{ async_id }}-status-loading row align-self-center justify-content-center mb-1">
+        <div class="spinner-border text-primary" role="status"></div>
+        <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+    </div>
+    <div class="{{ async_id }}-status-failed alert alert-danger mb-1 d-none" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>An exception occurred while requesting information
+    </div>
+</div>
+<div id="trainingChartsContent" class="d-none">
+    <div class="training-charts-chart-container">
+        <canvas id="trainingChartsMapLoss"></canvas>
+    </div>
+    <div class="accordion accordion-chevron-indicator mb-1" id="trainingChartsLrBox">
+        <div class="card border-bottom">
+            <div class="card-header p-0" id="trainingChartsLrHeading">
+                <h2 class="mb-0">
+                    <button class="btn btn-link w-100 text-left collapsed" id="trainingChartsLrButton" type="button"
+                            data-toggle="collapse" data-target="#trainingChartsLrCollapse"
+                            aria-expanded="false" aria-controls="trainingChartsLrCollapse">
+                        Learning rate
+                    </button>
+                </h2>
+            </div>
+            <div id="trainingChartsLrCollapse" class="collapse" aria-labelledby="trainingChartsLrHeading"
+                 data-parent="#trainingChartsLrBox">
+                <div class="card-body p-1">
+                    <div class="training-charts-chart-container">
+                        <canvas id="trainingChartsLr"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

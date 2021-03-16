@@ -1,0 +1,98 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block css %}{{ super() }}
+    {{ includeTemplatesCSS(['page_elements/async-action.html']) }}
+{% endblock %}
+
+{% block js %}{{ super() }}
+    {{ includeTemplatesJS(['page_elements/async-action.html']) }}
+    <script type="text/javascript" src="{{ static('base/js/page/export.js') }}"></script>
+{% endblock %}
+
+
+{% block sidebar_content %}
+    <h3>Export image predictions</h3>
+    <div class="border border-primary rounded p-2">
+        {% with async_id = 'export', async_dependency_run_text = 'Inference',
+        async_dependency_prerequisite_text = 'Inference' %}
+            {% macro async_options() %}
+                <div class="d-flex flex-wrap flex-row">
+                    <div class="input-group m-2 w-auto">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="{{ async_id }}OptionsThresholdLabel">Threshold (%)</span>
+                        </div>
+                        <input type="number" class="form-control" id="{{ async_id }}OptionsThreshold"
+                               aria-label="Threshold"
+                               aria-describedby="{{ async_id }}OptionsThresholdLabel" max="100" size="3" step="5"
+                               min="{{ (KerasFlaskConfig.INFERENCE_THRESHOLD_DB_WRITE * 100) | int }}"
+                               value="{{ get_export_default_threshold() }}">
+                    </div>
+                </div>
+            {% endmacro %}
+            {% macro async_progress() %}
+                <div class="container mw-100 w-auto" id="{{ async_id }}Progress">
+                    <div class="row">
+                        <div class="col-4">
+                            <span id="{{ async_id }}ProgressCurrent">CURRENT</span> videos
+                        </div>
+                        <div class="col-4 text-center">
+                            <span id="{{ async_id }}ProgressPercent">PERCENT</span> %
+                        </div>
+                        <div class="col-4 text-right">
+                            <span id="{{ async_id }}ProgressTotal">TOTAL</span> videos
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="progress">
+                                <div class="progress-bar" id="{{ async_id }}ProgressBar" role="progressbar"
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endmacro %}
+            {% include 'page_elements/async-action.html' %}
+            <script type="text/javascript">
+                const ExportConfig = {
+                    asyncActionId: '{{ async_id }}',
+                    urlDownload: '{{ url("base:export_file") }}',
+                    appName: '{{ request.resolver_match.app_name }}',
+                }
+            </script>
+        {% endwith %}
+    </div>
+
+    <h3 class="mt-5">History
+        <span class="d-none" id="exportHistoryModelPre">for model </span>
+        <span class="d-none" id="exportHistoryModelDate">LAST_MODEL</span>
+    </h3>
+    <div class="border border-primary rounded p-2">
+        <div>
+            <div class="export-status-loading row align-self-center justify-content-center mb-1">
+                <div class="spinner-border text-primary" role="status"></div>
+                <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+            </div>
+        </div>
+
+        <div class="export-content d-none">
+            <!-- iframe used to avoid websocket disconnection and tab opening for download -->
+            <iframe class="position-absolute invisible" id="exportHistoryDownloadFrame" width="1" height="1"
+                    src="about:blank"></iframe>
+            <table class="table d-none" id="exportHistoryTable">
+                <thead class="bg-primary text-white">
+                <tr>
+                    <th data-field="filename">Filename</th>
+                    <th data-field="threshold" data-sortable="true">Threshold</th>
+                    <th data-field="date" data-sortable="true">Date</th>
+                    <th data-field="size">Size</th>
+                    <th data-field="download" data-width="1" data-align="center">Download</th>
+                </tr>
+                </thead>
+            </table>
+            <div class="alert alert-warning mb-0" id="exportHistoryNotFound" role="alert">
+                <i class="fas fa-info-circle mr-2"></i>No prior exports found
+            </div>
+        </div>
+    </div>
+{% endblock %}

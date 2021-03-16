@@ -1,0 +1,21 @@
+.grid-annotation-prediction .grid-content .grid-prediction-score {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 0);
+    padding: .5rem;
+    background-color: rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transition: opacity .5s;
+    cursor: default;
+    line-height: 1;
+}
+
+.grid-annotation-prediction .grid-content-always-predictions .grid-prediction-score {
+    opacity: 1 !important;
+}
+
+.grid-annotation-prediction .grid-content .col:hover .grid-prediction-score {
+    opacity: 1;
+}

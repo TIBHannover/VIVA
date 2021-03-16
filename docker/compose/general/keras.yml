@@ -1,0 +1,25 @@
+image: viva_keras:${TAG_CUSTOM_KERAS}-cpu
+build:
+  context: ./build/keras
+  args:
+    TAG_TENSORFLOW: ${TAG_TENSORFLOW}
+    TAG_GPU: ''
+command: python3 "/code/service.py"
+working_dir: /code
+volumes:
+- ../keras_app:/code
+- ./data/concept-classification/logs:/logs
+- ./data/concept-classification/models:/models
+- ./data/export:/export
+- ${MEDIA_ROOT:-../app/media}:/media:ro
+environment:
+- GPU_MODE=0
+env_file:
+- .env
+- env/django_keras.env
+- env/keras.env
+- env/keras_tf-serving.env
+depends_on:
+- postgres
+- redis
+- tf-serving

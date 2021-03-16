@@ -1,0 +1,3 @@
+command: bash "/scripts/start_init.sh"
+depends_on:
+- postgres

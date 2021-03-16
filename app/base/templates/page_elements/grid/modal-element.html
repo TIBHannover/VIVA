@@ -1,0 +1,24 @@
+{# Modal for displaying enlarged image #}
+<div class="modal fade grid-modal-element" id="{{ grid_id }}ModalElement" tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close modal-title" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="enlargedImage" class="enlarged-image" src="" alt="Image could not be loaded.">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#{{ grid_id }}ModalElement .close').on('click', function () {
+            $('#{{ grid_id }}ModalElement').modal('hide');
+        });
+    });
+</script>

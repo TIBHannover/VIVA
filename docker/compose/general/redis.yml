@@ -1,0 +1,5 @@
+image: redis:${TAG_REDIS}
+command: redis-server "/redis.conf"
+volumes:
+- ./data/redis:/data
+- ./build/redis/redis.conf:/redis.conf:ro

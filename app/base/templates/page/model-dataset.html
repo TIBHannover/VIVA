@@ -1,0 +1,85 @@
+{% extends 'page_layout/sidebar.html' %}
+
+{% block sidebar_content %}
+    <div class="alert alert-warning mb-1{% if cutoff_samples_idx > 0 %} d-none{% endif %}" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>No class has enough annotations
+    </div>
+
+    {% if dataset_distribution|length > 0 %}
+    <div class="dataset-overview-chart-container w-100">
+        <canvas id="datasetOverview"
+                {% if dataset_distribution|length > 30 %} height="{{ dataset_distribution|length * 4 }}"{% endif %}>
+        </canvas>
+    </div>
+    {% endif %}
+
+    <script type="text/javascript">
+        let ctx = document.getElementById('datasetOverview').getContext('2d');
+        let dataSetOverviewChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: [{% for entry in dataset_distribution %}{% if loop.index0 == cutoff_samples_idx %}'', {% endif %}'{{ entry.classid__name }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Negative samples',
+                    backgroundColor: 'rgba(255,99,132,0.5)',
+                    borderColor: 'rgb(255,99,132)',
+                    borderWidth: 1,
+                    data: [{% for entry in dataset_distribution %}{% if loop.index0 == cutoff_samples_idx %}0, {% endif %}-{{ entry.negatives }}{% if not loop.last %}, {% endif %}{% endfor %}]
+                }, {
+                    label: 'Positive samples',
+                    backgroundColor: 'rgba(54, 162, 235, .5)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    data: [{% for entry in dataset_distribution %}{% if loop.index0 == cutoff_samples_idx %}0, {% endif %}{{ entry.positives }}{% if not loop.last %}, {% endif %}{% endfor %}]
+                }]
+            },
+            options: {
+                elements: {
+                    rectangle: {
+                        borderWidth: 2,
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                    }],
+                    yAxes: [{
+                        stacked: true,
+                        ticks: {
+                            autoSkipPadding: -6
+                        }
+                    }]
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItems, data) {
+                            let label = data.datasets[tooltipItems.datasetIndex].label + ": ";
+                            return label + (tooltipItems.xLabel < 0 ? (-tooltipItems.xLabel).toString() : tooltipItems.value);
+                        }
+                    }
+                },
+                plugins: {
+                    annotation: {
+                        annotations: []
+                    }
+                }
+            }
+        });
+        {% if cutoff_samples_idx != -1 %}
+            dataSetOverviewChart.options.plugins.annotation.annotations.push({
+                type: 'line',
+                id: 'minAnnotations',
+                mode: 'horizontal',
+                scaleID: 'y-axis-0',
+                value: {{ cutoff_samples_idx }},
+                borderColor: 'black',
+                borderWidth: 4,
+                label: {
+                    enabled: true,
+                    fontSize: 10,
+                    position: "right",
+                    content: "At least {{ min_class_samples }} positive samples required for training"
+                }
+            });
+        {% endif %}
+    </script>
+{% endblock %}

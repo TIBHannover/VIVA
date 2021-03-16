@@ -1,0 +1,88 @@
+{# Help annotation modal #}
+<div class="modal fade grid-modal-annotation-help" id="{{ grid_id }}ModalAnnotationHelp" tabindex="-1" role="dialog"
+     aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalLabel">Help - Keymap</h5>
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <kbd>a</kbd> Toggle all annotations<br><br>
+                {% if not review %}
+                    <kbd>s</kbd> Save annotations and go to next page<br><br>
+                {% else %}
+                    <kbd>s</kbd> Save annotations<br><br>
+                    <kbd>d</kbd> Go to next page<br><br>
+                {% endif %}
+                {% if not web_search_id %}
+                    <kbd>space</kbd> Play selected video shot if available<br><br>
+                {% endif %}
+                <kbd>shift</kbd> + <kbd>left click</kbd> Enlarge selected image
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Got it!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Saving annotation wait modal #}
+<div class="modal fade grid-modal-annotation-save" id="{{ grid_id }}ModalAnnotationSave" tabindex="-1" role="dialog"
+     aria-labelledby="saveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="saveModalLabel">Saving...</h5>
+            </div>
+            <div class="modal-body container">
+                <div class="row align-self-center justify-content-center">
+                    <span class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Saving</span>
+                    </span>
+                    <span class="m-1">Do not close the browser window!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Unsaved annotations warning modal #}
+<div class="modal fade grid-modal-annotation-unsaved" id="{{ grid_id }}ModalAnnotationUnsaved" tabindex="-1"
+     role="dialog" aria-labelledby="unsavedModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="unsavedModalLabel">Unsaved annotations</h5>
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Warning: There are unsaved annotations! Are you sure you want to change the page content?
+                This will discard your changes.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary modal-leave-btn" data-dismiss="modal">
+                    Leave anyway
+                </button>
+                <button type="button" class="btn btn-primary" id="unsavedStay" data-dismiss="modal">
+                    Stay on page
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#{{ grid_id }}ModalAnnotationHelp .close').on('click', function () {
+            $('#{{ grid_id }}ModalAnnotationHelp').modal('hide');
+        });
+        $('#{{ grid_id }}ModalAnnotationUnsaved .close').on('click', function () {
+            $('#{{ grid_id }}ModalAnnotationUnsaved').modal('hide');
+        });
+    });
+</script>

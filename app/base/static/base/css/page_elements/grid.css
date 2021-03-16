@@ -1,0 +1,59 @@
+.grid .grid-content {
+    max-width: 100%;
+}
+
+.grid .grid-content .col div:first-child {
+    line-height: 0;
+}
+
+.grid .grid-content img, .grid-content video {
+    object-fit: contain;
+}
+
+.grid .grid-content .grid-video-container :not(:first-child) video {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.grid .grid-content .grid-video-container .grid-video-controls {
+    position: absolute;
+	bottom: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.grid .grid-content .grid-video-container:hover .grid-video-controls {
+    opacity: 1;
+}
+
+.grid .grid-content .grid-video-container .grid-video-controls i {
+    cursor: pointer;
+    padding: .8rem;
+}
+
+.grid .grid-content .grid-video-container .grid-video-controls i:hover {
+    color: deepskyblue;
+}
+
+
+.grid .grid-bar .grid-bar-pagination a.page-link {
+    cursor: pointer;
+}
+
+.grid .grid-bar .grid-bar-pagination .text-black {
+    color: black;
+}
+
+
+.grid-modals .grid-modal-element .modal-dialog {
+    max-width: max-content;
+    text-align: center;
+}
+
+.grid-modals .grid-modal-element .enlarged-image {
+    width: 80vw;
+    height: auto;
+    max-width: none;
+    max-height: 80vh;
+    object-fit: contain;
+}

@@ -1,0 +1,26 @@
+image: viva_app:${TAG_CUSTOM_DJANGO}
+build:
+  context: ./build/django
+  args:
+    TAG_PYTHON: ${TAG_PYTHON}
+command: bash "/scripts/start_web.sh"
+working_dir: /code
+volumes:
+- ../app:/code
+- ${MEDIA_ROOT:-../app/media}:/media:ro
+- ./data/django:/transfer:ro
+- ./data/export:/export:ro
+- static-volume:/code/static
+- ./data/face-processing/models:/person_models
+env_file:
+- .env
+- env/django.env
+- env/django_keras.env
+- env/django_nginx.env
+depends_on:
+- django-rq
+- elastic-search
+- face-processing
+- keras
+- postgres
+- redis

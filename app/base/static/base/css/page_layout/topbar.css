@@ -1,0 +1,11 @@
+#pageTopNavBar .navbar-brand {
+  padding-top: 0;
+}
+
+#pageTopNavBar .navbar-brand img {
+  height: 1.5em;
+}
+
+#pageTopNavBar .app-icon-active {
+  color: rgba(0, 0, 0, .7);
+}

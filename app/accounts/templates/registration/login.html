@@ -1,0 +1,77 @@
+{% extends 'page_layout/registration.html' %}
+{% set announcements = 1 %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('registration/css/login-apply.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('registration/js/login-apply.js') }}"></script>
+{% endblock %}
+
+{% block registration_content %}
+    <h3>Sign in</h3>
+    <p>or <a id="button-groups-change" href="{{ url('accounts:apply_user') }}">apply for an account</a>.</p>
+    {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            Your username and password didn't match. Please try again.
+        </div>
+    {% endif %}
+    {% if next %}
+        {% if not form.errors and request.GET.session %}
+            <div class="alert alert-info" role="alert">
+                Your session has expired! Please log in again to see this page!
+            </div>
+        {% else %}
+            {% if not form.errors and not user.is_authenticated %}
+                <div class="alert alert-info" role="alert">
+                    Please login to see this page!
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group mb-2">
+            <label for="inputUsername" class="col-form-label">Username</label>
+            <input type="text" class="form-control" id="inputUsername" placeholder=""
+                   name="username" {% if request.POST.username %}value="{{ request.POST.username }}"{% endif %}>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword" class="col-form-label">Password</label>
+            <div class="input-group toggle-password">
+                <input type="password" class="form-control" id="inputPassword" placeholder="" name="password">
+                <span class="input-group-btn input-group-append">
+                        <button class="btn btn-secondary" type="button">
+                            <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                        </button>
+                    </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Sign in</button>
+            {# Assumes you setup the password_reset view in your URLconf #}
+            <p class="pt-2">
+                <a href="#" data-toggle="tooltip" data-placement="bottom"
+                   title="Please contact a user manager to reset your password.">
+                    Lost password?
+                </a>
+            </p>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}"/>
+    </form>
+    <script>
+        $(function () {
+            let registrationFormDiv = $('#registrationFormDiv');
+            // here again since code in parallel with parent template - focus does not work since div is not visible
+            registrationFormDiv.removeClass("d-none");
+            registrationFormDiv.css('width', '500px');  // Unfortunately no parent CSS selector is available yet
+            let inputUsername = $('#inputUsername');
+            if (inputUsername.val() === "") {
+                inputUsername.focus();
+            } else {
+                $('#inputPassword').focus();
+            }
+        });
+    </script>
+{% endblock %}

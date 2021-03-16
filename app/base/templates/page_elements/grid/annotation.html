@@ -1,0 +1,9 @@
+{% extends 'page_elements/grid/' + grid_element + '.html' %}
+
+{# Did not place a container for annotation around element since for video elements there is still an unexplained
+   space under them which makes the annotation borders not show up cleanly
+  {% block before %}<div class="annotation">{% endblock %}
+  {% block after %}</div>{% endblock %} #}
+
+{% block template_class_suffix %}annotation{% endblock %}
+{% block element_class %}annotation{% endblock %}

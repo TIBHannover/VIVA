@@ -1,0 +1,22 @@
+{% extends 'page_layout/registration.html' %}
+{% set announcements = 1 %}
+
+{% block css %}{{ super() }}
+    <link href="{{ static('registration/css/login-apply.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}{{ super() }}
+    <script type="text/javascript" src="{{ static('registration/js/login-apply.js') }}"></script>
+{% endblock %}
+
+{% block registration_content %}
+    <h3 class="mb-0">Blocked access</h3>
+    <div class="alert alert-danger" role="alert">
+        The access has been restricted because there had been too much failed attempts at login.
+        <br>
+        The lock will remain for at least {{ (DEFENDER_COOLOFF_TIME / 60) | int }} minutes. Please try again later.
+    </div>
+    <a href="{{ url("base:start") }}" role="button" class="btn btn-primary">
+        <i class="fas fa-key" aria-hidden="true"></i> Try to open login form again
+    </a>
+{% endblock %}

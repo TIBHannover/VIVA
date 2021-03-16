@@ -1,0 +1,54 @@
+{#
+    Template for asynchronous logging to front end over SSE
+
+    Jinja context variables that are used by this template:
+    - async_log_id: the HTML id to use in this template (follow HTML naming conventions!)
+
+    Use the Javascript class "AsyncLog" for client side functionality.
+#}
+
+{% macro css() %}
+    <link href="{{ static('concept_classification/css/page_elements/async-log.css') }}" rel="stylesheet">
+{% endmacro %}
+
+{% macro js() %}
+    <script type="text/javascript" src="{{ static('concept_classification/js/page_elements/async-log.js') }}"></script>
+{% endmacro %}
+
+<div>
+    <div id="{{ async_log_id }}StatusDisconnected" class="alert alert-danger mb-1 d-none" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>No connection to internal server. Trying to connect...
+    </div>
+    <div id="{{ async_log_id }}StatusLoading" class="row align-self-center justify-content-center mb-1">
+        <div class="spinner-border text-primary" role="status"></div>
+        <span class="ml-2 mr-2 mt-1 mb-0">Loading ...</span>
+    </div>
+    <div id="{{ async_log_id }}StatusFailedFetch" class="alert alert-danger mb-1 d-none" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i>Could not fetch the current log. Retrying automatically...
+    </div>
+</div>
+<div id="{{ async_log_id }}Content" class="d-none">
+    <div class="d-inline-flex async-log-options">
+        <div class="input-group m-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" aria-label="Automatic scroll" checked id="{{ async_log_id }}AutoScroll">
+                </div>
+            </div>
+            <input type="text" disabled class="form-control" aria-label="Automatic scroll" value="Scroll down">
+        </div>
+        <div class="input-group m-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-external-link-alt"></i>
+                </div>
+            </div>
+            <a class="form-control" id="{{ async_log_id }}Link" target="_blank">
+                Open full log content
+            </a>
+        </div>
+    </div>
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <textarea class="w-100 async-log-content" id="{{ async_log_id }}TextArea" rows="15" wrap="soft" readonly></textarea>
+</div>
+

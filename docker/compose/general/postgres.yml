@@ -1,0 +1,8 @@
+image: postgres:${TAG_POSTGRES}
+shm_size: 512M
+volumes:
+- ./data/postgres/data:/var/lib/postgresql/data
+- ./data/postgres/transfer:/transfer
+ports:
+- 127.0.0.1:${PORT_POSTGRES:-5432}:5432
+env_file: .env

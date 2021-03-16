@@ -1,0 +1,27 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+Flask = "*"
+flask-sse = "*"
+flask_cors = "*"
+gevent = "<=20.9.0"
+gunicorn = "*"
+pandas = "*"
+pillow = "*"
+pynvml = "*"
+psutil = ">=2.0"
+psycopg2 = "*"
+redis = "*"
+requests = "==2.25.0"
+scikit-learn = "*"
+tensorflow = "==2.3.0"
+tensorflow-serving-api = "==2.3.0"
+
+[requires]
+# the Python version has to match the version installed in the used TensorFlow Docker image
+python_version = "3.6"
